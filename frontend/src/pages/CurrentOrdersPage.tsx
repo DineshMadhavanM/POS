@@ -176,7 +176,7 @@ export const CurrentOrdersPage: React.FC = () => {
 
                         {uPrice > 0 && (
                           <div className="text-right font-mono text-slate-300 font-bold">
-                            ${iTotal.toFixed(2)}
+                            ₹{iTotal.toFixed(2)}
                           </div>
                         )}
                       </div>
@@ -190,17 +190,17 @@ export const CurrentOrdersPage: React.FC = () => {
                     <>
                       <div className="flex justify-between text-slate-400">
                         <span>Subtotal:</span>
-                        <span className="font-mono">${subtotal.toFixed(2)}</span>
+                        <span className="font-mono">₹{subtotal.toFixed(2)}</span>
                       </div>
                       <div className="flex justify-between text-slate-400">
                         <span>Tax (5%):</span>
-                        <span className="font-mono">${taxAmount.toFixed(2)}</span>
+                        <span className="font-mono">₹{taxAmount.toFixed(2)}</span>
                       </div>
                     </>
                   )}
                   <div className="flex justify-between items-center text-sm font-extrabold text-white pt-1">
                     <span>Total Bill:</span>
-                    <span className="font-mono text-emerald-400 text-base">${totalAmount.toFixed(2)}</span>
+                    <span className="font-mono text-emerald-400 text-base">₹{totalAmount.toFixed(2)}</span>
                   </div>
                 </div>
 

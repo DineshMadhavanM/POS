@@ -8,7 +8,7 @@ export const ReportsPage: React.FC = () => {
   const [topProducts, setTopProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const currencySymbol = organization?.currency === 'INR' ? '₹' : organization?.currency === 'EUR' ? '€' : '$';
+  const currencySymbol = organization?.currency === 'USD' ? '$' : '₹';
 
   useEffect(() => {
     const loadReports = async () => {

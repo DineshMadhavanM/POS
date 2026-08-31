@@ -26,7 +26,7 @@ export const ProductsPage: React.FC = () => {
     isService: false
   });
 
-  const currencySymbol = organization?.currency === 'INR' ? '₹' : organization?.currency === 'EUR' ? '€' : '$';
+  const currencySymbol = organization?.currency === 'USD' ? '$' : '₹';
 
   const loadData = async () => {
     try {

@@ -259,7 +259,7 @@ export const MenuPage: React.FC = () => {
                       {p.name}
                     </span>
                   </div>
-                  <p className="text-[11px] text-slate-400 font-mono">${p.sellingPrice.toFixed(2)}</p>
+                  <p className="text-[11px] text-slate-400 font-mono">₹{p.sellingPrice.toFixed(2)}</p>
                 </div>
 
                 <div className="mt-3 flex items-center justify-between pt-2 border-t border-slate-700/50 text-[10px] text-slate-400 font-semibold">
@@ -361,7 +361,7 @@ export const MenuPage: React.FC = () => {
                       </button>
                     </div>
                     <span className="text-xs font-mono text-slate-300 font-bold">
-                      ${(item.product.sellingPrice * item.quantity).toFixed(2)}
+                      ₹{(item.product.sellingPrice * item.quantity).toFixed(2)}
                     </span>
                   </div>
                 </div>
@@ -426,7 +426,7 @@ export const MenuPage: React.FC = () => {
                     }`}
                   >
                     <span>{m.name}</span>
-                    <span>+${m.price.toFixed(2)}</span>
+                    <span>+₹{m.price.toFixed(2)}</span>
                   </button>
                 );
               })}

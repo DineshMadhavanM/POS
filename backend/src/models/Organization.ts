@@ -32,7 +32,7 @@ const organizationSchema = new Schema<IOrganization>(
     address: { type: String, default: '' },
     gstin: { type: String, default: '' },
     businessLogo: { type: String, default: '' },
-    currency: { type: String, default: 'USD' },
+    currency: { type: String, default: 'INR' },
     timezone: { type: String, default: 'UTC' },
     taxRateDefault: { type: Number, default: 5 },
     invoicePrefix: { type: String, default: 'INV' },

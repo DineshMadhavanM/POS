@@ -44,7 +44,7 @@ export const POSPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
 
-  const currencySymbol = organization?.currency === 'INR' ? '₹' : organization?.currency === 'EUR' ? '€' : '$';
+  const currencySymbol = organization?.currency === 'USD' ? '$' : '₹';
 
   // Load products, categories, customers
   useEffect(() => {

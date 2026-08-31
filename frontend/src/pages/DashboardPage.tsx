@@ -49,7 +49,7 @@ export const DashboardPage: React.FC = () => {
     );
   }
 
-  const currencySymbol = organization?.currency === 'INR' ? '₹' : organization?.currency === 'EUR' ? '€' : '$';
+  const currencySymbol = organization?.currency === 'USD' ? '$' : '₹';
 
   return (
     <div className="space-y-6">

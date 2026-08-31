@@ -22,7 +22,7 @@ export const BakeryPage: React.FC = () => {
     advancePaid: 30.0
   });
 
-  const currencySymbol = organization?.currency === 'INR' ? '₹' : organization?.currency === 'EUR' ? '€' : '$';
+  const currencySymbol = organization?.currency === 'USD' ? '$' : '₹';
 
   const loadOrders = async () => {
     try {
