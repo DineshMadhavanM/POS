@@ -38,8 +38,33 @@ export const createOrder = async (req: Request, res: Response) => {
 
     const orderData = parseResult.data;
 
+    // Auto find or create customer record if customerName or customerPhone is provided
+    let customerId = orderData.customerId;
+    if (!customerId && (orderData.customerPhone || (orderData.customerName && orderData.customerName !== 'Walk-in Customer'))) {
+      const phoneToFind = orderData.customerPhone || orderData.customerName;
+      let customer = await Customer.findOne({
+        organizationId: req.tenant.organizationId,
+        $or: [
+          { phoneNumber: phoneToFind },
+          { name: orderData.customerName }
+        ]
+      });
+
+      if (!customer) {
+        customer = await Customer.create({
+          organizationId: req.tenant.organizationId,
+          name: orderData.customerName || 'Walk-in Customer',
+          phoneNumber: orderData.customerPhone || 'N/A',
+          totalPurchases: 0,
+          loyaltyPoints: 0
+        });
+      }
+      customerId = customer._id.toString();
+    }
+
     const order = await Order.create({
       ...orderData,
+      customerId,
       organizationId: req.tenant.organizationId,
       outletId: req.tenant.outletId,
       orderNumber,
@@ -131,12 +156,29 @@ export const checkoutInvoice = async (req: Request, res: Response) => {
     order.status = OrderStatus.COMPLETED;
     await order.save();
 
-    // Reset Table if attached
+    // Mark associated KOT Tickets as SERVED so they automatically disappear from Current Orders screen
+    await KitchenOrderTicket.updateMany(
+      {
+        organizationId: req.tenant.organizationId,
+        $or: [
+          { orderId: order._id },
+          { orderNumber: order.orderNumber }
+        ]
+      },
+      { $set: { status: KOTStatus.SERVED } }
+    );
+
+    // Reset Table if attached or matched by tableNumber
     if (order.tableId) {
       await Table.findByIdAndUpdate(order.tableId, {
         status: TableStatus.AVAILABLE,
         currentOrderId: null
       });
+    } else if (order.tableNumber) {
+      await Table.findOneAndUpdate(
+        { organizationId: req.tenant.organizationId, tableNumber: order.tableNumber },
+        { status: TableStatus.AVAILABLE, currentOrderId: null }
+      );
     }
 
     // Process Stock Deductions & Log Stock Movements
@@ -163,10 +205,34 @@ export const checkoutInvoice = async (req: Request, res: Response) => {
       }
     }
 
-    // Award Loyalty Points to Customer
-    if (order.customerId) {
+    // Award Loyalty Points & Update Customer Total Purchases
+    let targetCustId: any = order.customerId;
+    if (!targetCustId && (order.customerPhone || (order.customerName && order.customerName !== 'Walk-in Customer'))) {
+      const phoneToFind = order.customerPhone || order.customerName;
+      let cust = await Customer.findOne({
+        organizationId: req.tenant.organizationId,
+        $or: [
+          { phoneNumber: phoneToFind },
+          { name: order.customerName }
+        ]
+      });
+      if (!cust) {
+        cust = await Customer.create({
+          organizationId: req.tenant.organizationId,
+          name: order.customerName || 'Walk-in Customer',
+          phoneNumber: order.customerPhone || 'N/A',
+          totalPurchases: 0,
+          loyaltyPoints: 0
+        });
+      }
+      targetCustId = cust._id.toString();
+      order.customerId = cust._id as any;
+      await order.save();
+    }
+
+    if (targetCustId) {
       const pointsEarned = Math.floor(order.grandTotal / 10);
-      await Customer.findByIdAndUpdate(order.customerId, {
+      await Customer.findByIdAndUpdate(targetCustId, {
         $inc: { totalPurchases: order.grandTotal, loyaltyPoints: pointsEarned }
       });
     }
@@ -278,5 +344,66 @@ export const refundInvoice = async (req: Request, res: Response) => {
   } catch (err: any) {
     console.error('[RefundInvoice Error]', err);
     return sendError(res, err.message || 'Refund processing failed', 500);
+  }
+};
+
+// GET ORDERS HISTORY
+export const getOrders = async (req: Request, res: Response) => {
+  try {
+    if (!req.tenant) return sendError(res, 'Tenant missing', 403);
+
+    const { search, status, type } = req.query;
+    const filter: any = { organizationId: req.tenant.organizationId };
+
+    if (status) filter.status = status;
+    if (type) filter.type = type;
+    if (search) {
+      filter.$or = [
+        { orderNumber: { $regex: search, $options: 'i' } },
+        { customerName: { $regex: search, $options: 'i' } },
+        { customerPhone: { $regex: search, $options: 'i' } }
+      ];
+    }
+
+    const orders = await Order.find(filter).sort({ createdAt: -1 });
+
+    // Calculate today's sequential order number (todayOrderNo)
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const todayOrders = orders.filter(o => new Date(o.createdAt) >= today);
+    const todayMap = new Map<string, number>();
+    todayOrders.reverse().forEach((ord, index) => {
+      todayMap.set(ord._id.toString(), index + 1);
+    });
+
+    const formattedOrders = orders.map(ord => {
+      const plainObj = ord.toObject();
+      return {
+        ...plainObj,
+        todayOrderNo: todayMap.get(ord._id.toString()) || 1
+      };
+    });
+
+    return sendSuccess(res, formattedOrders, 'Orders history retrieved successfully');
+  } catch (err: any) {
+    console.error('[GetOrders Error]', err);
+    return sendError(res, err.message || 'Failed to fetch orders history', 500);
+  }
+};
+
+// DELETE ORDER
+export const deleteOrder = async (req: Request, res: Response) => {
+  try {
+    if (!req.tenant) return sendError(res, 'Tenant missing', 403);
+
+    const { id } = req.params;
+    const deleted = await Order.findOneAndDelete({ _id: id, organizationId: req.tenant.organizationId });
+    if (!deleted) return sendError(res, 'Order not found', 404);
+
+    return sendSuccess(res, deleted, 'Order deleted successfully');
+  } catch (err: any) {
+    console.error('[DeleteOrder Error]', err);
+    return sendError(res, err.message || 'Failed to delete order', 500);
   }
 };

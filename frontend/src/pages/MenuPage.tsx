@@ -33,7 +33,7 @@ export const MenuPage: React.FC = () => {
 
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [selectedTable, setSelectedTable] = useState<string>('T-01');
+  const [selectedTable, setSelectedTable] = useState<string>('Normal');
   const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
   const [sendingKOT, setSendingKOT] = useState(false);
   const [lastDispatchedKOT, setLastDispatchedKOT] = useState<string | null>(null);
@@ -142,8 +142,8 @@ export const MenuPage: React.FC = () => {
       return acc + (item.product.sellingPrice + modifierSum) * item.quantity;
     }, 0);
 
-    const taxAmount = subtotal * 0.05;
-    const totalAmount = subtotal + taxAmount;
+    const taxAmount = 0;
+    const totalAmount = subtotal;
 
     try {
       const payload = {
@@ -241,35 +241,75 @@ export const MenuPage: React.FC = () => {
         </div>
 
         {/* Product Cards Grid */}
-        <div className="flex-1 overflow-y-auto pr-1 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+        <div className="flex-1 overflow-y-auto pr-1 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 xl:grid-cols-4 gap-4 items-start content-start">
           {filteredProducts.length === 0 ? (
             <div className="col-span-full py-16 text-center text-slate-500">
               No menu items match your search.
             </div>
           ) : (
-            filteredProducts.map((p) => (
-              <div
-                key={p._id}
-                onClick={() => handleAddProduct(p)}
-                className="bg-slate-800/80 hover:bg-slate-800 border border-slate-700/80 hover:border-emerald-500/50 rounded-2xl p-4 flex flex-col justify-between cursor-pointer transition-all duration-200 group shadow-md"
-              >
-                <div>
-                  <div className="flex justify-between items-start mb-2">
-                    <span className="text-xs font-bold text-white group-hover:text-emerald-400 transition line-clamp-2">
-                      {p.name}
-                    </span>
-                  </div>
-                  <p className="text-[11px] text-slate-400 font-mono">₹{p.sellingPrice.toFixed(2)}</p>
-                </div>
+            filteredProducts.map((p) => {
+              const itemInTicket = orderItems.find(item => item.product._id === p._id);
+              const qtyInTicket = itemInTicket ? itemInTicket.quantity : 0;
 
-                <div className="mt-3 flex items-center justify-between pt-2 border-t border-slate-700/50 text-[10px] text-slate-400 font-semibold">
-                  <span>Stock: {p.currentStock}</span>
-                  <span className="p-1 bg-emerald-500/10 text-emerald-400 rounded-lg group-hover:bg-emerald-500 group-hover:text-white transition">
-                    <Plus className="w-3.5 h-3.5" />
-                  </span>
+              return (
+                <div
+                  key={p._id}
+                  onClick={() => handleAddProduct(p)}
+                  className={`p-4 rounded-2xl border text-left flex flex-col justify-between cursor-pointer transition-all duration-200 group shadow-xl relative overflow-hidden self-start min-h-[140px] ${
+                    qtyInTicket > 0
+                      ? 'bg-slate-900 border-emerald-500/60 ring-1 ring-emerald-500/30'
+                      : 'bg-slate-900/90 hover:bg-slate-800/90 border-slate-800 hover:border-emerald-500/40'
+                  }`}
+                >
+                  {/* Quantity Badge if in ticket */}
+                  {qtyInTicket > 0 && (
+                    <div className="absolute top-2.5 right-2.5 px-2.5 py-0.5 rounded-full bg-emerald-500 text-slate-950 font-extrabold text-[10px] shadow-md flex items-center gap-1">
+                      <span>{qtyInTicket} in order</span>
+                    </div>
+                  )}
+
+                  <div>
+                    <div className="flex items-center justify-between gap-2 mb-2.5">
+                      <div className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+                        <Utensils className="w-4 h-4" />
+                      </div>
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-800 border border-slate-700 text-slate-300">
+                        Stock: {p.currentStock}
+                      </span>
+                    </div>
+
+                    <h4 className="font-bold text-white text-sm line-clamp-2 group-hover:text-emerald-400 transition leading-snug">
+                      {p.name}
+                    </h4>
+                  </div>
+
+                  <div className="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between gap-2">
+                    <div>
+                      <span className="text-[10px] text-slate-400 block font-medium">Price</span>
+                      <span className="text-base font-extrabold text-emerald-400 font-mono">
+                        ₹{p.sellingPrice.toFixed(2)}
+                      </span>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleAddProduct(p);
+                      }}
+                      className={`px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md transition ${
+                        qtyInTicket > 0
+                          ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-600/20'
+                          : 'bg-slate-800 hover:bg-emerald-600 text-slate-200 hover:text-white border border-slate-700 hover:border-emerald-500'
+                      }`}
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                      <span>{qtyInTicket > 0 ? 'Add More' : 'Add'}</span>
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
       </div>
@@ -289,23 +329,18 @@ export const MenuPage: React.FC = () => {
 
           {/* Table Selection Dropdown / Selector */}
           <div>
-            <label className="block text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wider">Select Table / Room</label>
+            <label className="block text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wider">Select Table</label>
             <select
               value={selectedTable}
               onChange={(e) => setSelectedTable(e.target.value)}
               className="w-full px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm font-bold text-emerald-400 focus:outline-none focus:border-emerald-500"
             >
-              {tables.length === 0 ? (
-                <option value="T-01">T-01 (Main Hall)</option>
-              ) : (
-                tables.map((t) => (
-                  <option key={t._id} value={t.tableNumber}>
-                    {t.tableNumber} ({t.capacity} Seats - {t.status})
-                  </option>
-                ))
-              )}
-              <option value="TAKEAWAY">Takeaway Counter</option>
-              <option value="ROOM-DELIVERY">Room Delivery</option>
+              <option value="Normal">Normal</option>
+              {tables.map((t) => (
+                <option key={t._id} value={t.tableNumber}>
+                  {t.tableNumber} ({t.capacity} Seats - {t.status})
+                </option>
+              ))}
             </select>
           </div>
 

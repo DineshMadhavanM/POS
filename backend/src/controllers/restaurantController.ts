@@ -127,6 +127,8 @@ export const getKOTTickets = async (req: Request, res: Response) => {
 
     if (status) {
       filter.status = status;
+    } else {
+      filter.status = { $nin: [KOTStatus.SERVED, 'CANCELLED', 'COMPLETED', 'PAID'] };
     }
 
     const tickets = await KitchenOrderTicket.find(filter).sort({ createdAt: -1 });
@@ -162,5 +164,23 @@ export const updateKOTStatus = async (req: Request, res: Response) => {
   } catch (err: any) {
     console.error('[UpdateKOTStatus Error]', err);
     return sendError(res, err.message || 'Failed to update KOT ticket', 500);
+  }
+};
+
+export const deleteTable = async (req: Request, res: Response) => {
+  try {
+    if (!req.tenant) return sendError(res, 'Tenant missing', 403);
+
+    const { id } = req.params;
+    const table = await Table.findOneAndDelete({ _id: id, organizationId: req.tenant.organizationId });
+
+    if (!table) {
+      return sendError(res, 'Table not found', 404);
+    }
+
+    return sendSuccess(res, table, 'Table deleted successfully');
+  } catch (err: any) {
+    console.error('[DeleteTable Error]', err);
+    return sendError(res, err.message || 'Failed to delete table', 500);
   }
 };

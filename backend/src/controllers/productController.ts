@@ -180,3 +180,40 @@ export const createCategory = async (req: Request, res: Response) => {
     return sendError(res, err.message || 'Category creation failed', 500);
   }
 };
+
+export const updateCategory = async (req: Request, res: Response) => {
+  try {
+    if (!req.tenant) return sendError(res, 'Tenant missing', 403);
+    const { id } = req.params;
+
+    const parseResult = categorySchema.partial().safeParse(req.body);
+    if (!parseResult.success) {
+      return sendError(res, 'Validation error', 400, parseResult.error.errors);
+    }
+
+    const category = await Category.findOneAndUpdate(
+      { _id: id, organizationId: req.tenant.organizationId },
+      { $set: parseResult.data },
+      { new: true }
+    );
+
+    if (!category) return sendError(res, 'Category not found', 404);
+    return sendSuccess(res, category, 'Category updated successfully');
+  } catch (err: any) {
+    return sendError(res, err.message || 'Category update failed', 500);
+  }
+};
+
+export const deleteCategory = async (req: Request, res: Response) => {
+  try {
+    if (!req.tenant) return sendError(res, 'Tenant missing', 403);
+    const { id } = req.params;
+
+    const category = await Category.findOneAndDelete({ _id: id, organizationId: req.tenant.organizationId });
+    if (!category) return sendError(res, 'Category not found', 404);
+
+    return sendSuccess(res, { id }, 'Category deleted successfully');
+  } catch (err: any) {
+    return sendError(res, err.message || 'Category deletion failed', 500);
+  }
+};

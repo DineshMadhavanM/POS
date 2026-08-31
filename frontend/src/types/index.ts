@@ -41,10 +41,11 @@ export interface ProductModifier {
 
 export interface Product {
   _id: string;
+  organizationId?: string;
   name: string;
   sku?: string;
   barcode?: string;
-  categoryId?: { _id: string; name: string } | string;
+  categoryId?: { _id: string; name: string; colorCode?: string } | string;
   description?: string;
   sellingPrice: number;
   costPrice: number;
@@ -59,6 +60,7 @@ export interface Product {
 
 export interface Category {
   _id: string;
+  organizationId?: string;
   name: string;
   description?: string;
   colorCode?: string;

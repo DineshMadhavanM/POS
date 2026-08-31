@@ -72,7 +72,14 @@ export const getCustomerById = async (req: Request, res: Response) => {
       return sendError(res, 'Customer not found', 404);
     }
 
-    const orders = await Order.find({ customerId: id, organizationId: req.tenant.organizationId }).sort({ createdAt: -1 });
+    const orders = await Order.find({
+      organizationId: req.tenant.organizationId,
+      $or: [
+        { customerId: id },
+        { customerPhone: customer.phoneNumber },
+        { customerName: customer.name }
+      ]
+    }).sort({ createdAt: -1 });
 
     return sendSuccess(res, { customer, orders }, 'Customer profile and history loaded');
   } catch (err: any) {

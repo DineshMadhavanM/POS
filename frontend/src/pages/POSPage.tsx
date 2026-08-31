@@ -37,8 +37,13 @@ export const POSPage: React.FC = () => {
   const [showReceiptModal, setShowReceiptModal] = useState(false);
 
   const [paymentMethods, setPaymentMethods] = useState<Array<{ method: 'CASH' | 'UPI' | 'CARD'; amount: number }>>([
-    { method: 'CASH', amount: 0 }
+    { method: 'UPI', amount: 0 }
   ]);
+
+  const [custNameInput, setCustNameInput] = useState('');
+  const [custPhoneInput, setCustPhoneInput] = useState('');
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<'UPI' | 'CARD' | 'CASH'>('UPI');
+  const [discountMode, setDiscountMode] = useState<'pct' | 'amt'>('pct');
 
   const [completedInvoice, setCompletedInvoice] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -91,7 +96,10 @@ export const POSPage: React.FC = () => {
   // Open Checkout
   const handleOpenCheckout = () => {
     if (cart.items.length === 0) return;
-    setPaymentMethods([{ method: 'CASH', amount: cart.getGrandTotal() }]);
+    setCustNameInput(cart.selectedCustomer?.name || '');
+    setCustPhoneInput(cart.selectedCustomer?.phoneNumber || '');
+    setSelectedPaymentMethod('UPI');
+    setPaymentMethods([{ method: 'UPI', amount: cart.getGrandTotal() }]);
     setShowCheckoutModal(true);
   };
 
@@ -105,8 +113,8 @@ export const POSPage: React.FC = () => {
         tableId: cart.selectedTableId || undefined,
         tableNumber: cart.selectedTableNumber || undefined,
         customerId: cart.selectedCustomer?._id || undefined,
-        customerName: cart.selectedCustomer?.name || undefined,
-        customerPhone: cart.selectedCustomer?.phoneNumber || undefined,
+        customerName: custNameInput || cart.selectedCustomer?.name || 'Walk-in Customer',
+        customerPhone: custPhoneInput || cart.selectedCustomer?.phoneNumber || '',
         items: cart.items.map(item => ({
           productId: item.product._id,
           productName: item.product.name,
@@ -131,7 +139,7 @@ export const POSPage: React.FC = () => {
       // 2. Checkout Invoice
       const checkoutRes = await api.post('/pos/checkout', {
         orderId: order._id,
-        paymentDetails: paymentMethods
+        paymentDetails: [{ method: selectedPaymentMethod, amount: cart.getGrandTotal() }]
       });
 
       if (checkoutRes.data.success) {
@@ -208,42 +216,74 @@ export const POSPage: React.FC = () => {
         </div>
 
         {/* Products Grid */}
-        <div className="flex-1 overflow-y-auto grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4 pr-1">
+        <div className="flex-1 overflow-y-auto grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4 pr-1 items-start content-start">
           {filteredProducts.length === 0 ? (
             <div className="col-span-full py-16 text-center text-slate-500">
               No products found matching filters.
             </div>
           ) : (
-            filteredProducts.map((p) => (
-              <button
-                key={p._id}
-                onClick={() => cart.addItem(p)}
-                className="p-4 rounded-2xl bg-slate-900/90 hover:bg-slate-800/90 border border-slate-800 hover:border-blue-500/40 text-left flex flex-col justify-between group transition duration-200"
-              >
-                <div>
-                  <div className="flex items-center justify-between gap-1 mb-2">
-                    <span className="text-xs font-mono text-slate-500">{p.sku || p.barcode || 'N/A'}</span>
-                    {!p.isService && (
-                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase ${
-                        p.currentStock <= p.minimumStock ? 'bg-rose-500/20 text-rose-400' : 'bg-emerald-500/10 text-emerald-400'
-                      }`}>
-                        Stock: {p.currentStock}
-                      </span>
-                    )}
-                  </div>
-                  <h4 className="font-bold text-white text-sm line-clamp-2 group-hover:text-blue-400 transition">{p.name}</h4>
-                </div>
+            filteredProducts.map((p) => {
+              const itemInCart = cart.items.find(i => i.product._id === p._id);
+              const qtyInCart = itemInCart ? itemInCart.quantity : 0;
 
-                <div className="mt-4 pt-3 border-t border-slate-800/60 flex items-center justify-between">
-                  <span className="text-base font-extrabold text-blue-400">
-                    {currencySymbol}{p.sellingPrice.toFixed(2)}
-                  </span>
-                  <div className="w-7 h-7 rounded-lg bg-blue-600/20 text-blue-400 group-hover:bg-blue-600 group-hover:text-white flex items-center justify-center transition">
-                    <Plus className="w-4 h-4" />
+              return (
+                <div
+                  key={p._id}
+                  onClick={() => cart.addItem(p)}
+                  className={`p-4 rounded-2xl border text-left flex flex-col justify-between cursor-pointer transition-all duration-200 group shadow-xl relative overflow-hidden self-start min-h-[140px] ${
+                    qtyInCart > 0
+                      ? 'bg-slate-900 border-blue-500/60 ring-1 ring-blue-500/30'
+                      : 'bg-slate-900/90 hover:bg-slate-800/90 border-slate-800 hover:border-blue-500/40'
+                  }`}
+                >
+                  {/* Quantity Badge if in cart */}
+                  {qtyInCart > 0 && (
+                    <div className="absolute top-2.5 right-2.5 px-2.5 py-0.5 rounded-full bg-blue-600 text-white font-extrabold text-[10px] shadow-md flex items-center gap-1">
+                      <span>{qtyInCart} in cart</span>
+                    </div>
+                  )}
+
+                  <div>
+                    <div className="flex items-center justify-between gap-1 mb-2">
+                      <span className="text-[10px] font-mono text-slate-500">{p.sku || p.barcode || 'ITEM'}</span>
+                      {!p.isService && (
+                        <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase ${
+                          p.currentStock <= p.minimumStock ? 'bg-rose-500/20 text-rose-400' : 'bg-emerald-500/10 text-emerald-400'
+                        }`}>
+                          Stock: {p.currentStock}
+                        </span>
+                      )}
+                    </div>
+                    <h4 className="font-bold text-white text-sm line-clamp-2 group-hover:text-blue-400 transition leading-snug">{p.name}</h4>
+                  </div>
+
+                  <div className="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between gap-2">
+                    <div>
+                      <span className="text-[10px] text-slate-400 block">Price</span>
+                      <span className="text-base font-extrabold text-blue-400 font-mono">
+                        {currencySymbol}{p.sellingPrice.toFixed(2)}
+                      </span>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        cart.addItem(p);
+                      }}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md transition ${
+                        qtyInCart > 0
+                          ? 'bg-blue-600 hover:bg-blue-500 text-white shadow-blue-600/20'
+                          : 'bg-slate-800 hover:bg-blue-600 text-slate-200 hover:text-white border border-slate-700 hover:border-blue-500'
+                      }`}
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                      <span>{qtyInCart > 0 ? 'Add More' : 'Add'}</span>
+                    </button>
                   </div>
                 </div>
-              </button>
-            ))
+              );
+            })
           )}
         </div>
       </div>
@@ -401,58 +441,209 @@ export const POSPage: React.FC = () => {
         </div>
       )}
 
-      {/* MODAL: Split Checkout */}
+      {/* MODAL: Checkout */}
       {showCheckoutModal && (
         <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-800 w-full max-w-lg p-6 rounded-3xl space-y-6">
+          <div className="bg-slate-900 border border-slate-800 w-full max-w-md p-6 rounded-3xl space-y-5 shadow-2xl">
+            {/* Header */}
             <div className="flex justify-between items-center border-b border-slate-800 pb-3">
-              <div>
-                <h3 className="font-bold text-white text-lg">Checkout Payment</h3>
-                <p className="text-xs text-slate-400">Total Payable: {currencySymbol}{cart.getGrandTotal().toFixed(2)}</p>
-              </div>
-              <button onClick={() => setShowCheckoutModal(false)} className="text-slate-400 hover:text-white">
+              <h3 className="font-bold text-white text-xl">Checkout</h3>
+              <button onClick={() => setShowCheckoutModal(false)} className="text-slate-400 hover:text-white p-1">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="space-y-3">
-              <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Payment Method</label>
-              <div className="grid grid-cols-3 gap-3">
+            {/* Order Type */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-300">Order Type</label>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => cart.setOrderType('RETAIL_SALE')}
+                  className={`py-2.5 px-4 rounded-xl text-xs font-bold transition border ${
+                    cart.orderType === 'RETAIL_SALE'
+                      ? 'bg-blue-600 text-white border-blue-500 shadow-md shadow-blue-500/20'
+                      : 'bg-slate-800 text-slate-400 border-slate-700 hover:bg-slate-700 hover:text-slate-200'
+                  }`}
+                >
+                  Walk-in
+                </button>
+                <button
+                  type="button"
+                  onClick={() => cart.setOrderType('TAKEAWAY')}
+                  className={`py-2.5 px-4 rounded-xl text-xs font-bold transition border ${
+                    cart.orderType === 'TAKEAWAY'
+                      ? 'bg-blue-600 text-white border-blue-500 shadow-md shadow-blue-500/20'
+                      : 'bg-slate-800 text-slate-400 border-slate-700 hover:bg-slate-700 hover:text-slate-200'
+                  }`}
+                >
+                  Takeaway
+                </button>
+              </div>
+            </div>
+
+            {/* Customer Info */}
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-slate-300">Customer</label>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="block text-[11px] text-slate-400 mb-1">Name (opt)</label>
+                  <input
+                    type="text"
+                    placeholder="Name"
+                    value={custNameInput}
+                    onChange={(e) => setCustNameInput(e.target.value)}
+                    className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[11px] text-slate-400 mb-1">Phone (opt)</label>
+                  <input
+                    type="text"
+                    placeholder="Phone"
+                    value={custPhoneInput}
+                    onChange={(e) => setCustPhoneInput(e.target.value)}
+                    className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Payment Method */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-300">Payment Method</label>
+              <div className="grid grid-cols-3 gap-2">
                 {[
-                  { method: 'CASH', label: 'Cash', icon: Banknote },
-                  { method: 'UPI', label: 'UPI QR', icon: QrCode },
-                  { method: 'CARD', label: 'Card', icon: CreditCard }
+                  { method: 'UPI', label: 'UPI', icon: QrCode },
+                  { method: 'CARD', label: 'Card', icon: CreditCard },
+                  { method: 'CASH', label: 'Cash', icon: Banknote }
                 ].map((item) => {
                   const Icon = item.icon;
-                  const isSelected = paymentMethods[0]?.method === item.method;
+                  const isSelected = selectedPaymentMethod === item.method;
                   return (
                     <button
                       key={item.method}
-                      onClick={() => setPaymentMethods([{ method: item.method as any, amount: cart.getGrandTotal() }])}
-                      className={`p-3 rounded-2xl border text-center flex flex-col items-center gap-1.5 transition ${
-                        isSelected ? 'bg-blue-600/20 border-blue-500 text-blue-400 font-bold' : 'bg-slate-800/60 border-slate-700 text-slate-400'
+                      type="button"
+                      onClick={() => {
+                        setSelectedPaymentMethod(item.method as any);
+                        setPaymentMethods([{ method: item.method as any, amount: cart.getGrandTotal() }]);
+                      }}
+                      className={`py-2.5 px-3 rounded-xl border flex items-center justify-center gap-1.5 transition text-xs font-bold ${
+                        isSelected
+                          ? 'bg-blue-600 text-white border-blue-500 shadow-md shadow-blue-500/20'
+                          : 'bg-slate-800 text-slate-400 border-slate-700 hover:bg-slate-700 hover:text-slate-200'
                       }`}
                     >
-                      <Icon className="w-5 h-5" />
-                      <span className="text-xs">{item.label}</span>
+                      <Icon className="w-3.5 h-3.5" />
+                      <span>{item.label}</span>
                     </button>
                   );
                 })}
               </div>
             </div>
 
+            {/* Itemized Cart Items Summary */}
+            <div className="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-3.5 space-y-2 max-h-36 overflow-y-auto">
+              {cart.items.length === 0 ? (
+                <div className="text-xs text-slate-400 flex justify-between items-center">
+                  <span>Triple chocolate brownie × 1</span>
+                  <span className="font-bold text-white">₹79</span>
+                </div>
+              ) : (
+                cart.items.map((item) => (
+                  <div key={item.product._id} className="flex justify-between items-center text-xs">
+                    <span className="text-slate-200 font-medium">{item.product.name} × {item.quantity}</span>
+                    <span className="text-white font-bold">{currencySymbol}{item.itemTotal.toFixed(0)}</span>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {/* Subtotal, Discount & Total */}
+            <div className="space-y-2.5 text-xs pt-1 border-t border-slate-800">
+              <div className="flex justify-between text-slate-400">
+                <span>Subtotal</span>
+                <span className="font-mono text-slate-200 font-bold">{currencySymbol}{cart.getSubtotal().toFixed(2)}</span>
+              </div>
+
+              {/* Discount Section */}
+              <div className="space-y-2 bg-slate-800/40 p-3 rounded-2xl border border-slate-800">
+                <div className="flex justify-between items-center">
+                  <span className="text-slate-300 font-bold">Discount</span>
+                  <div className="bg-slate-800 p-0.5 rounded-lg border border-slate-700 flex items-center">
+                    <button
+                      type="button"
+                      onClick={() => setDiscountMode('pct')}
+                      className={`px-2 py-0.5 rounded text-[10px] font-bold ${discountMode === 'pct' ? 'bg-blue-600 text-white' : 'text-slate-400'}`}
+                    >
+                      %
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setDiscountMode('amt')}
+                      className={`px-2 py-0.5 rounded text-[10px] font-bold ${discountMode === 'amt' ? 'bg-blue-600 text-white' : 'text-slate-400'}`}
+                    >
+                      {currencySymbol}
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <input
+                    type="number"
+                    min="0"
+                    placeholder={discountMode === 'pct' ? 'Enter percentage...' : 'Enter discount amount...'}
+                    value={discountMode === 'pct' ? (cart.discountPercentage || '') : (cart.discountAmount || '')}
+                    onChange={(e) => {
+                      const val = parseFloat(e.target.value) || 0;
+                      if (discountMode === 'pct') {
+                        cart.setDiscountPercentage(val);
+                      } else {
+                        cart.setDiscountAmount(val);
+                      }
+                    }}
+                    className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+
+                {/* Preset Chips: 0%, 5%, 10%, 15% */}
+                <div className="flex items-center gap-2 pt-1">
+                  {[0, 5, 10, 15].map((pct) => (
+                    <button
+                      key={pct}
+                      type="button"
+                      onClick={() => {
+                        setDiscountMode('pct');
+                        cart.setDiscountPercentage(pct);
+                      }}
+                      className={`flex-1 py-1 rounded-lg text-xs font-bold border transition ${
+                        cart.discountPercentage === pct && discountMode === 'pct'
+                          ? 'bg-blue-600 text-white border-blue-500'
+                          : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'
+                      }`}
+                    >
+                      {pct}%
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex justify-between items-center text-sm font-extrabold text-white pt-1">
+                <span>Total</span>
+                <span className="text-emerald-400 font-mono text-base">{currencySymbol}{cart.getGrandTotal().toFixed(2)}</span>
+              </div>
+            </div>
+
+            {/* Confirm Payment Button */}
             <button
               onClick={handleFinalizeCheckout}
               disabled={checkoutLoading}
-              className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-bold rounded-2xl text-sm shadow-xl shadow-emerald-500/20 flex items-center justify-center gap-2 transition"
+              className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-bold rounded-2xl text-sm shadow-xl shadow-emerald-500/25 flex items-center justify-center gap-2 transition"
             >
               {checkoutLoading ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
               ) : (
-                <>
-                  <CheckCircle2 className="w-5 h-5" />
-                  <span>Confirm Payment & Issue Receipt</span>
-                </>
+                <span>Confirm Payment · {currencySymbol}{cart.getGrandTotal().toFixed(2)}</span>
               )}
             </button>
           </div>

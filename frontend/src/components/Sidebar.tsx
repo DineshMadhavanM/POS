@@ -16,7 +16,8 @@ import {
   BarChart3,
   Settings,
   Sparkles,
-  LogOut
+  LogOut,
+  Layers
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -29,11 +30,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenAI }) => {
 
   const navItems = [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard, roles: ['OWNER', 'MANAGER'] },
-    { name: 'Waiter Menu & KOT', path: '/menu', icon: Utensils, roles: ['OWNER', 'MANAGER', 'CASHIER', 'KITCHEN_STAFF'] },
-    { name: 'Current Orders', path: '/current-orders', icon: ClipboardList, roles: ['OWNER', 'MANAGER', 'CASHIER', 'KITCHEN_STAFF'] },
     { name: 'POS Billing', path: '/pos', icon: ShoppingCart, roles: ['OWNER', 'MANAGER', 'CASHIER'] },
+    { name: 'Current Orders', path: '/current-orders', icon: ClipboardList, roles: ['OWNER', 'MANAGER', 'CASHIER', 'KITCHEN_STAFF'] },
     { name: 'Products', path: '/products', icon: Package, roles: ['OWNER', 'MANAGER', 'CASHIER', 'INVENTORY_STAFF'] },
-    { name: 'Inventory', path: '/inventory', icon: Boxes, roles: ['OWNER', 'MANAGER', 'INVENTORY_STAFF'] },
+    { name: 'Categories', path: '/categories', icon: Layers, roles: ['OWNER', 'MANAGER', 'CASHIER', 'INVENTORY_STAFF'] },
+    { name: 'Waiter Menu & KOT', path: '/menu', icon: Utensils, roles: ['OWNER', 'MANAGER', 'CASHIER', 'KITCHEN_STAFF'] },
+    { name: 'Order History', path: '/inventory', icon: ClipboardList, roles: ['OWNER', 'MANAGER', 'INVENTORY_STAFF', 'CASHIER'] },
     { name: 'Customers', path: '/customers', icon: Users, roles: ['OWNER', 'MANAGER', 'CASHIER'] },
     { name: 'Employees', path: '/employees', icon: UserCheck, roles: ['OWNER', 'MANAGER'] },
     { name: 'Reports', path: '/reports', icon: BarChart3, roles: ['OWNER', 'MANAGER', 'CASHIER'] },

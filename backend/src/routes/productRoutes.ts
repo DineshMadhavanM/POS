@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getProducts, createProduct, updateProduct, deleteProduct, getCategories, createCategory } from '../controllers/productController';
+import { getProducts, createProduct, updateProduct, deleteProduct, getCategories, createCategory, updateCategory, deleteCategory } from '../controllers/productController';
 import { authenticate } from '../middlewares/authMiddleware';
 import { verifyTenant } from '../middlewares/tenantMiddleware';
 import { requireRole } from '../middlewares/rbacMiddleware';
@@ -16,5 +16,7 @@ router.delete('/products/:id', requireRole([UserRole.OWNER, UserRole.ADMIN]), de
 
 router.get('/categories', getCategories);
 router.post('/categories', requireRole([UserRole.OWNER, UserRole.ADMIN, UserRole.INVENTORY_STAFF]), createCategory);
+router.put('/categories/:id', requireRole([UserRole.OWNER, UserRole.ADMIN, UserRole.INVENTORY_STAFF]), updateCategory);
+router.delete('/categories/:id', requireRole([UserRole.OWNER, UserRole.ADMIN]), deleteCategory);
 
 export default router;

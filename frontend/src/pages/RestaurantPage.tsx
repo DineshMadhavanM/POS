@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../services/api';
 import { RestaurantTable, KOTTicket } from '../types';
-import { UtensilsCrossed, Plus, Clock, CheckCircle2, AlertCircle, Loader2, X, Check, Ban } from 'lucide-react';
+import { UtensilsCrossed, Plus, Clock, CheckCircle2, AlertCircle, Loader2, X, Check, Ban, Trash2 } from 'lucide-react';
 
 export const RestaurantPage: React.FC = () => {
   const [tables, setTables] = useState<RestaurantTable[]>([]);
@@ -41,6 +41,21 @@ export const RestaurantPage: React.FC = () => {
       }
     } catch (err: any) {
       alert(err.response?.data?.error || 'Failed to create table');
+    }
+  };
+
+  const handleDeleteTable = async (id: string, tableNumber: string) => {
+    if (!window.confirm(`Are you sure you want to delete Table ${tableNumber}? This action cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      const res = await api.delete(`/restaurant/tables/${id}`);
+      if (res.data.success) {
+        setTables((prev) => prev.filter((t) => t._id !== id));
+      }
+    } catch (err: any) {
+      alert(err.response?.data?.error || 'Failed to delete table');
     }
   };
 
@@ -123,7 +138,20 @@ export const RestaurantPage: React.FC = () => {
                 >
                   {/* Table Header */}
                   <div className="flex items-center justify-between w-full border-b border-white/10 pb-2 mb-3">
-                    <span className="text-sm font-mono font-black tracking-wider text-white uppercase">{t.tableNumber}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-mono font-black tracking-wider text-white uppercase">{t.tableNumber}</span>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteTable(t._id, t.tableNumber);
+                        }}
+                        className="p-1 text-white/50 hover:text-rose-400 hover:bg-rose-500/20 rounded-lg transition"
+                        title="Delete Table"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                     <span
                       className={`text-[10px] uppercase font-black px-2.5 py-0.5 rounded-full border shadow-sm ${
                         isAvailable

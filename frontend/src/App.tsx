@@ -18,6 +18,7 @@ import { MenuPage } from './pages/MenuPage';
 import { CurrentOrdersPage } from './pages/CurrentOrdersPage';
 import { POSPage } from './pages/POSPage';
 import { ProductsPage } from './pages/ProductsPage';
+import { CategoriesPage } from './pages/CategoriesPage';
 import { InventoryPage } from './pages/InventoryPage';
 import { CustomersPage } from './pages/CustomersPage';
 import { EmployeesPage } from './pages/EmployeesPage';
@@ -76,6 +77,7 @@ export const App: React.FC = () => {
             <Route path="/current-orders" element={<CurrentOrdersPage />} />
             <Route path="/pos" element={<POSPage />} />
             <Route path="/products" element={<ProductsPage />} />
+            <Route path="/categories" element={<CategoriesPage />} />
             <Route path="/inventory" element={<InventoryPage />} />
             <Route path="/customers" element={<CustomersPage />} />
             <Route path="/employees" element={<EmployeesPage />} />
