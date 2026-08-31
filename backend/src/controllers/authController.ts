@@ -410,14 +410,21 @@ export const googleAuth = async (req: Request, res: Response) => {
     let user = await User.findOne({ email: cleanEmail });
 
     if (!user) {
-      const passwordHash = await bcrypt.hash(`GoogleOAuth_${Date.now()}`, 10);
-      user = await User.create({
-        name: name || 'Google User',
-        email: cleanEmail,
-        passwordHash,
-        avatarUrl: avatarUrl || '',
-        isEmailVerified: true
-      });
+      try {
+        const passwordHash = await bcrypt.hash(`GoogleOAuth_${Date.now()}`, 10);
+        user = await User.create({
+          name: name || 'Google User',
+          email: cleanEmail,
+          passwordHash,
+          avatarUrl: avatarUrl || '',
+          isEmailVerified: true
+        });
+      } catch (createErr: any) {
+        user = await User.findOne({ email: cleanEmail });
+        if (!user) {
+          throw createErr;
+        }
+      }
     }
 
     const employee = await Employee.findOne({ userId: user._id, status: 'ACTIVE' })
