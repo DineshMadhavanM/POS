@@ -115,13 +115,18 @@ export interface KOTTicket {
   _id: string;
   orderNumber: string;
   tableNumber: string;
+  subtotal?: number;
+  taxAmount?: number;
+  totalAmount?: number;
   items: {
     productName: string;
     quantity: number;
+    unitPrice?: number;
+    itemTotal?: number;
     selectedModifiers?: ProductModifier[];
     specialInstructions?: string;
   }[];
-  status: 'PENDING' | 'PREPARING' | 'READY' | 'SERVED';
+  status: 'PENDING' | 'PREPARING' | 'READY' | 'SERVED' | 'CANCELLED';
   createdAt: string;
 }
 

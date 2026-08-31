@@ -137,15 +137,32 @@ export const MenuPage: React.FC = () => {
     setSendingKOT(true);
     setLastDispatchedKOT(null);
 
+    const subtotal = orderItems.reduce((acc, item) => {
+      const modifierSum = item.selectedModifiers.reduce((mAcc, m) => mAcc + m.price, 0);
+      return acc + (item.product.sellingPrice + modifierSum) * item.quantity;
+    }, 0);
+
+    const taxAmount = subtotal * 0.05;
+    const totalAmount = subtotal + taxAmount;
+
     try {
       const payload = {
         tableNumber: selectedTable,
-        items: orderItems.map((item) => ({
-          productName: item.product.name,
-          quantity: item.quantity,
-          selectedModifiers: item.selectedModifiers,
-          specialInstructions: item.specialInstructions || ''
-        }))
+        subtotal,
+        taxAmount,
+        totalAmount,
+        items: orderItems.map((item) => {
+          const modifierSum = item.selectedModifiers.reduce((mAcc, m) => mAcc + m.price, 0);
+          const unitPrice = item.product.sellingPrice + modifierSum;
+          return {
+            productName: item.product.name,
+            quantity: item.quantity,
+            unitPrice,
+            itemTotal: unitPrice * item.quantity,
+            selectedModifiers: item.selectedModifiers,
+            specialInstructions: item.specialInstructions || ''
+          };
+        })
       };
 
       const res = await api.post('/restaurant/kot', payload);

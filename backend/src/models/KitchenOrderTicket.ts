@@ -4,6 +4,8 @@ import { KOTStatus } from '../constants/enums';
 export interface IKOTItem {
   productName: string;
   quantity: number;
+  unitPrice?: number;
+  itemTotal?: number;
   selectedModifiers?: { name: string; price: number }[];
   specialInstructions?: string;
 }
@@ -15,6 +17,9 @@ export interface IKitchenOrderTicket extends Document {
   orderNumber: string;
   tableNumber?: string;
   items: IKOTItem[];
+  subtotal?: number;
+  taxAmount?: number;
+  totalAmount?: number;
   status: KOTStatus;
   createdAt: Date;
   updatedAt: Date;
@@ -27,10 +32,15 @@ const kitchenOrderTicketSchema = new Schema<IKitchenOrderTicket>(
     orderId: { type: Schema.Types.ObjectId, ref: 'Order', required: false },
     orderNumber: { type: String, required: true },
     tableNumber: { type: String, default: 'N/A' },
+    subtotal: { type: Number, default: 0 },
+    taxAmount: { type: Number, default: 0 },
+    totalAmount: { type: Number, default: 0 },
     items: [
       {
         productName: { type: String, required: true },
         quantity: { type: Number, required: true },
+        unitPrice: { type: Number, default: 0 },
+        itemTotal: { type: Number, default: 0 },
         selectedModifiers: [
           {
             name: { type: String },
