@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom';
 import { useAuthStore } from '../store/useAuthStore';
 import {
   LayoutDashboard,
+  Utensils,
   ShoppingCart,
   Package,
   Boxes,
@@ -27,6 +28,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenAI }) => {
 
   const navItems = [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard, roles: ['OWNER', 'MANAGER'] },
+    { name: 'Waiter Menu & KOT', path: '/menu', icon: Utensils, roles: ['OWNER', 'MANAGER', 'CASHIER', 'KITCHEN_STAFF'] },
     { name: 'POS Billing', path: '/pos', icon: ShoppingCart, roles: ['OWNER', 'MANAGER', 'CASHIER'] },
     { name: 'Products', path: '/products', icon: Package, roles: ['OWNER', 'MANAGER', 'CASHIER', 'INVENTORY_STAFF'] },
     { name: 'Inventory', path: '/inventory', icon: Boxes, roles: ['OWNER', 'MANAGER', 'INVENTORY_STAFF'] },

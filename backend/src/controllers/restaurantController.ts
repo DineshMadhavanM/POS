@@ -66,6 +66,50 @@ export const updateTableStatus = async (req: Request, res: Response) => {
 };
 
 // KITCHEN DISPLAY SYSTEM (KDS)
+const kotSchema = z.object({
+  tableNumber: z.string().min(1, 'Table number is required'),
+  items: z.array(z.object({
+    productName: z.string(),
+    quantity: z.number().min(1),
+    selectedModifiers: z.array(z.object({ name: z.string(), price: z.number() })).optional(),
+    specialInstructions: z.string().optional()
+  })).min(1, 'Order must contain at least 1 food item')
+});
+
+export const createKOTTicket = async (req: Request, res: Response) => {
+  try {
+    if (!req.tenant) return sendError(res, 'Tenant missing', 403);
+
+    const parseResult = kotSchema.safeParse(req.body);
+    if (!parseResult.success) {
+      return sendError(res, 'Validation error', 400, parseResult.error.errors);
+    }
+
+    const { tableNumber, items } = parseResult.data;
+    const orderNumber = `KOT-${Math.floor(100000 + Math.random() * 900000)}`;
+
+    const ticket = await KitchenOrderTicket.create({
+      organizationId: req.tenant.organizationId,
+      outletId: req.tenant.outletId,
+      orderNumber,
+      tableNumber,
+      items,
+      status: KOTStatus.PENDING
+    });
+
+    // Automatically set table status to OCCUPIED if table exists
+    await Table.findOneAndUpdate(
+      { organizationId: req.tenant.organizationId, tableNumber },
+      { status: TableStatus.OCCUPIED }
+    );
+
+    return sendSuccess(res, ticket, 'Kitchen Order Ticket sent to KDS successfully', 201);
+  } catch (err: any) {
+    console.error('[CreateKOTTicket Error]', err);
+    return sendError(res, err.message || 'Failed to dispatch KOT ticket', 500);
+  }
+};
+
 export const getKOTTickets = async (req: Request, res: Response) => {
   try {
     if (!req.tenant) return sendError(res, 'Tenant missing', 403);

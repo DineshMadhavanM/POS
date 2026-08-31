@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getTables, createTable, updateTableStatus, getKOTTickets, updateKOTStatus } from '../controllers/restaurantController';
+import { getTables, createTable, updateTableStatus, getKOTTickets, createKOTTicket, updateKOTStatus } from '../controllers/restaurantController';
 import { authenticate } from '../middlewares/authMiddleware';
 import { verifyTenant } from '../middlewares/tenantMiddleware';
 
@@ -12,6 +12,7 @@ router.post('/restaurant/tables', createTable);
 router.put('/restaurant/tables/:id/status', updateTableStatus);
 
 router.get('/restaurant/kot', getKOTTickets);
+router.post('/restaurant/kot', createKOTTicket);
 router.put('/restaurant/kot/:id/status', updateKOTStatus);
 
 export default router;

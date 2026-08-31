@@ -14,6 +14,7 @@ import { RegisterPage } from './pages/RegisterPage';
 import { OnboardingPage } from './pages/OnboardingPage';
 import { AuthCallbackPage } from './pages/AuthCallbackPage';
 import { DashboardPage } from './pages/DashboardPage';
+import { MenuPage } from './pages/MenuPage';
 import { POSPage } from './pages/POSPage';
 import { ProductsPage } from './pages/ProductsPage';
 import { InventoryPage } from './pages/InventoryPage';
@@ -70,6 +71,7 @@ export const App: React.FC = () => {
           {/* Protected Multi-Tenant SaaS Workspace Routes */}
           <Route element={<WorkspaceLayout />}>
             <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/menu" element={<MenuPage />} />
             <Route path="/pos" element={<POSPage />} />
             <Route path="/products" element={<ProductsPage />} />
             <Route path="/inventory" element={<InventoryPage />} />
