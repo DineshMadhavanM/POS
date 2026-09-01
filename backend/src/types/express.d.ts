@@ -1,6 +1,6 @@
-import { ITokenPayload } from '../utils/token';
-import { Types } from 'mongoose';
-import { UserRole } from '../constants/enums';
+import type { ITokenPayload } from '../utils/token';
+import type { Types } from 'mongoose';
+import type { UserRole } from '../constants/enums';
 
 declare global {
   namespace Express {
