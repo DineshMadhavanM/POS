@@ -245,14 +245,29 @@ export const LandingPage: React.FC = () => {
               >
                 Owner Login
               </Link>
+              <Link
+                to="/admin-login"
+                className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-3.5 bg-purple-600/30 hover:bg-purple-600/50 text-purple-300 hover:text-white border border-purple-500/40 font-bold rounded-xl text-xs sm:text-sm shadow-lg shadow-purple-500/10 transition active:scale-95 flex items-center justify-center gap-2"
+              >
+                <ShieldCheck className="w-4 h-4 text-purple-400" />
+                <span>Super Admin Panel</span>
+              </Link>
             </div>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="py-6 sm:py-8 border-t border-slate-800/80 px-4 sm:px-6 text-center text-xs text-slate-500">
+      <footer className="py-6 sm:py-8 border-t border-slate-800/80 px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3 max-w-7xl mx-auto w-full text-xs text-slate-500">
         <p>© 2026 NexStack POS SaaS Platform. All rights reserved.</p>
+        <div className="flex items-center gap-4">
+          <Link to="/employee-login" className="hover:text-slate-400 transition">Employee Terminal</Link>
+          <Link to="/login" className="hover:text-slate-400 transition">Owner Login</Link>
+          <Link to="/admin-login" className="text-purple-400 hover:text-purple-300 font-semibold transition flex items-center gap-1">
+            <ShieldCheck className="w-3.5 h-3.5" />
+            <span>Admin Panel</span>
+          </Link>
+        </div>
       </footer>
     </div>
   );

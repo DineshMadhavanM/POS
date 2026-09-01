@@ -14,6 +14,7 @@ import restaurantRoutes from './routes/restaurantRoutes';
 import bakeryRoutes from './routes/bakeryRoutes';
 import analyticsRoutes from './routes/analyticsRoutes';
 import aiRoutes from './routes/aiRoutes';
+import superAdminRoutes from './routes/superAdminRoutes';
 
 const app = express();
 
@@ -34,6 +35,7 @@ app.get('/health', (req, res) => {
 const API_PREFIX = '/api/v1';
 
 app.use(API_PREFIX, authRoutes);
+app.use(API_PREFIX + '/super-admin', superAdminRoutes);
 app.use(API_PREFIX, productRoutes);
 app.use(API_PREFIX, customerRoutes);
 app.use(API_PREFIX + '/pos', posRoutes);

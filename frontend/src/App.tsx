@@ -28,6 +28,8 @@ import { BakeryPage } from './pages/BakeryPage';
 import { RetailPage } from './pages/RetailPage';
 import { ReportsPage } from './pages/ReportsPage';
 import { SettingsPage } from './pages/SettingsPage';
+import { SuperAdminLoginPage } from './pages/SuperAdminLoginPage';
+import { SuperAdminPanelPage } from './pages/SuperAdminPanelPage';
 
 const queryClient = new QueryClient();
 
@@ -83,6 +85,8 @@ export const App: React.FC = () => {
           {/* Public Routes */}
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/admin-login" element={<SuperAdminLoginPage />} />
+          <Route path="/super-admin" element={<SuperAdminPanelPage />} />
           <Route path="/employee-login" element={<EmployeeLoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/onboarding" element={<OnboardingPage />} />
