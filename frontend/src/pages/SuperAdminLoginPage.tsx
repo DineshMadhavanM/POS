@@ -17,7 +17,10 @@ export const SuperAdminLoginPage: React.FC = () => {
     setLoading(true);
 
     try {
-      const res = await api.post('/super-admin/login', { email, password });
+      const res = await api.post('/super-admin/login', {
+        email: email.trim(),
+        password: password.trim()
+      });
       if (res.data.success) {
         localStorage.setItem('superAdminToken', res.data.data.token);
         localStorage.setItem('superAdminUser', JSON.stringify(res.data.data));
