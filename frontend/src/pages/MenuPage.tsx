@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { api } from '../services/api';
 import { Product, Category, RestaurantTable, ProductModifier } from '../types';
 import {
   Utensils,
+  UtensilsCrossed,
   Search,
   Plus,
   Minus,
@@ -193,23 +194,43 @@ export const MenuPage: React.FC = () => {
     <div className="h-[calc(100vh-100px)] flex flex-col lg:flex-row gap-4 sm:gap-6">
       {/* LEFT: Menu Catalog Grid */}
       <div className="flex-1 flex flex-col min-w-0 bg-slate-900/60 border border-slate-800 rounded-2xl sm:rounded-3xl p-3 sm:p-5 shadow-2xl overflow-hidden">
-        {/* Header & Search */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3 sm:mb-4">
-          <div>
-            <h1 className="text-lg sm:text-xl font-bold text-white tracking-tight flex items-center gap-2">
-              <Utensils className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-400" />
-              <span>Waiter Menu Order</span>
-            </h1>
-            <p className="text-[11px] sm:text-xs text-slate-400 mt-0.5">Select menu items and dispatch directly to Kitchen Display System (KDS)</p>
+        {/* Header, Quick Nav & Search */}
+        <div className="flex flex-col gap-3 mb-3 sm:mb-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h1 className="text-lg sm:text-xl font-bold text-white tracking-tight flex items-center gap-2">
+                <Utensils className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-400" />
+                <span>Waiter Menu Order</span>
+              </h1>
+              <p className="text-[11px] sm:text-xs text-slate-400 mt-0.5">Select menu items and dispatch directly to Kitchen Display System (KDS)</p>
+            </div>
+
+            {/* Quick Switcher for Waiter */}
+            <div className="flex items-center gap-2">
+              <Link
+                to="/restaurant"
+                className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition active:scale-95 shadow-sm"
+              >
+                <UtensilsCrossed className="w-3.5 h-3.5 text-emerald-400" />
+                <span>Table & KDS</span>
+              </Link>
+              <Link
+                to="/current-orders"
+                className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition active:scale-95 shadow-sm"
+              >
+                <Clock className="w-3.5 h-3.5 text-blue-400" />
+                <span>Live Orders</span>
+              </Link>
+            </div>
           </div>
 
-          <div className="relative w-full sm:w-64">
+          <div className="relative w-full">
             <Search className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search food items..."
+              placeholder="Search food items or SKU..."
               className="w-full pl-10 pr-4 py-2 sm:py-2.5 bg-slate-800/90 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition"
             />
           </div>

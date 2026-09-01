@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { api } from '../services/api';
 import { RestaurantTable, KOTTicket } from '../types';
-import { UtensilsCrossed, Plus, Clock, CheckCircle2, AlertCircle, Loader2, X, Check, Ban, Trash2 } from 'lucide-react';
+import { UtensilsCrossed, Utensils, Plus, Clock, CheckCircle2, AlertCircle, Loader2, X, Check, Ban, Trash2 } from 'lucide-react';
 
 export const RestaurantPage: React.FC = () => {
   const [tables, setTables] = useState<RestaurantTable[]>([]);
@@ -97,7 +98,15 @@ export const RestaurantPage: React.FC = () => {
             <p className="text-sm text-slate-400">Live seating availability layout. Click <strong>Green</strong> for Available or <strong>Red</strong> for Occupied</p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+            <Link
+              to="/menu"
+              className="px-3.5 py-2 bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 border border-blue-500/30 font-semibold rounded-xl text-xs flex items-center gap-1.5 transition active:scale-95 shadow-sm"
+            >
+              <Utensils className="w-3.5 h-3.5 text-blue-400" />
+              <span>Waiter & Menu Order</span>
+            </Link>
+
             <div className="flex items-center gap-3 text-xs bg-slate-900 border border-slate-800 px-3 py-2 rounded-xl font-bold">
               <span className="flex items-center gap-1 text-emerald-400"><span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span> Green: Available</span>
               <span className="flex items-center gap-1 text-rose-400"><span className="w-2.5 h-2.5 rounded-full bg-rose-500"></span> Red: Occupied</span>
