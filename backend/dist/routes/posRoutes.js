@@ -1,0 +1,17 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const posController_1 = require("../controllers/posController");
+const authMiddleware_1 = require("../middlewares/authMiddleware");
+const tenantMiddleware_1 = require("../middlewares/tenantMiddleware");
+const rbacMiddleware_1 = require("../middlewares/rbacMiddleware");
+const enums_1 = require("../constants/enums");
+const router = (0, express_1.Router)();
+router.use(authMiddleware_1.authenticate, tenantMiddleware_1.verifyTenant);
+router.get('/orders', posController_1.getOrders);
+router.post('/orders', (0, rbacMiddleware_1.requireRole)([enums_1.UserRole.OWNER, enums_1.UserRole.ADMIN, enums_1.UserRole.MANAGER, enums_1.UserRole.CASHIER, enums_1.UserRole.WAITER]), posController_1.createOrder);
+router.delete('/orders/:id', (0, rbacMiddleware_1.requireRole)([enums_1.UserRole.OWNER, enums_1.UserRole.ADMIN, enums_1.UserRole.MANAGER]), posController_1.deleteOrder);
+router.post('/checkout', (0, rbacMiddleware_1.requireRole)([enums_1.UserRole.OWNER, enums_1.UserRole.ADMIN, enums_1.UserRole.MANAGER, enums_1.UserRole.CASHIER, enums_1.UserRole.WAITER]), posController_1.checkoutInvoice);
+router.get('/invoices', posController_1.getInvoices);
+router.post('/invoices/:id/refund', (0, rbacMiddleware_1.requireRole)([enums_1.UserRole.OWNER, enums_1.UserRole.ADMIN, enums_1.UserRole.MANAGER]), posController_1.refundInvoice);
+exports.default = router;

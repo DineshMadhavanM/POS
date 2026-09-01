@@ -1,0 +1,16 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const restaurantController_1 = require("../controllers/restaurantController");
+const authMiddleware_1 = require("../middlewares/authMiddleware");
+const tenantMiddleware_1 = require("../middlewares/tenantMiddleware");
+const router = (0, express_1.Router)();
+router.use(authMiddleware_1.authenticate, tenantMiddleware_1.verifyTenant);
+router.get('/restaurant/tables', restaurantController_1.getTables);
+router.post('/restaurant/tables', restaurantController_1.createTable);
+router.put('/restaurant/tables/:id/status', restaurantController_1.updateTableStatus);
+router.delete('/restaurant/tables/:id', restaurantController_1.deleteTable);
+router.get('/restaurant/kot', restaurantController_1.getKOTTickets);
+router.post('/restaurant/kot', restaurantController_1.createKOTTicket);
+router.put('/restaurant/kot/:id/status', restaurantController_1.updateKOTStatus);
+exports.default = router;

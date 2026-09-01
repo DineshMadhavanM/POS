@@ -1,0 +1,14 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const employeeController_1 = require("../controllers/employeeController");
+const authMiddleware_1 = require("../middlewares/authMiddleware");
+const tenantMiddleware_1 = require("../middlewares/tenantMiddleware");
+const rbacMiddleware_1 = require("../middlewares/rbacMiddleware");
+const enums_1 = require("../constants/enums");
+const router = (0, express_1.Router)();
+router.use(authMiddleware_1.authenticate, tenantMiddleware_1.verifyTenant);
+router.get('/employees', (0, rbacMiddleware_1.requireRole)([enums_1.UserRole.OWNER, enums_1.UserRole.ADMIN]), employeeController_1.getEmployees);
+router.post('/employees', (0, rbacMiddleware_1.requireRole)([enums_1.UserRole.OWNER, enums_1.UserRole.ADMIN]), employeeController_1.inviteEmployee);
+router.put('/employees/:id', (0, rbacMiddleware_1.requireRole)([enums_1.UserRole.OWNER]), employeeController_1.updateEmployeeRole);
+exports.default = router;

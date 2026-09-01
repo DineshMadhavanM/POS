@@ -1,0 +1,15 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const inventoryController_1 = require("../controllers/inventoryController");
+const authMiddleware_1 = require("../middlewares/authMiddleware");
+const tenantMiddleware_1 = require("../middlewares/tenantMiddleware");
+const rbacMiddleware_1 = require("../middlewares/rbacMiddleware");
+const enums_1 = require("../constants/enums");
+const router = (0, express_1.Router)();
+router.use(authMiddleware_1.authenticate, tenantMiddleware_1.verifyTenant);
+router.post('/inventory/adjust', (0, rbacMiddleware_1.requireRole)([enums_1.UserRole.OWNER, enums_1.UserRole.ADMIN, enums_1.UserRole.MANAGER, enums_1.UserRole.INVENTORY_STAFF]), inventoryController_1.adjustStock);
+router.get('/inventory/movements', inventoryController_1.getStockMovements);
+router.get('/suppliers', inventoryController_1.getSuppliers);
+router.post('/suppliers', (0, rbacMiddleware_1.requireRole)([enums_1.UserRole.OWNER, enums_1.UserRole.ADMIN, enums_1.UserRole.MANAGER, enums_1.UserRole.INVENTORY_STAFF]), inventoryController_1.createSupplier);
+exports.default = router;

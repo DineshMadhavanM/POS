@@ -1,0 +1,17 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const authController_1 = require("../controllers/authController");
+const authMiddleware_1 = require("../middlewares/authMiddleware");
+const tenantMiddleware_1 = require("../middlewares/tenantMiddleware");
+const rbacMiddleware_1 = require("../middlewares/rbacMiddleware");
+const enums_1 = require("../constants/enums");
+const router = (0, express_1.Router)();
+router.post('/register', authController_1.register);
+router.post('/login', authController_1.login);
+router.post('/employee-login', authController_1.employeeLogin);
+router.post('/google-auth', authController_1.googleAuth);
+router.post('/refresh', authController_1.refresh);
+router.get('/me', authMiddleware_1.authenticate, tenantMiddleware_1.verifyTenant, authController_1.getMe);
+router.post('/onboarding', authMiddleware_1.authenticate, tenantMiddleware_1.verifyTenant, (0, rbacMiddleware_1.requireRole)([enums_1.UserRole.OWNER]), authController_1.completeOnboarding);
+exports.default = router;

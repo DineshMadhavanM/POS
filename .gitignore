@@ -2,9 +2,8 @@
 node_modules/
 **/node_modules/
 
-# Build Output
-dist/
-**/dist/
+# Frontend Build Output (backend dist is tracked for zero-config production startup)
+frontend/dist/
 build/
 **/build/
 
@@ -12,7 +11,8 @@ build/
 .env
 .env.local
 .env.*.local
-**/.env
+backend/.env
+frontend/.env
 
 # IDE / Editor files
 .vscode/
