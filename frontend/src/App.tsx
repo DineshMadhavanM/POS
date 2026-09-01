@@ -46,7 +46,7 @@ const WorkspaceLayout: React.FC = () => {
   }
 
   return (
-    <div className="flex min-h-screen bg-slate-950 text-slate-100">
+    <div className="flex min-h-screen bg-slate-950 text-slate-100 w-full max-w-full overflow-x-hidden">
       {/* Sidebar / Mobile Drawer */}
       <Sidebar
         onOpenAI={() => setIsAIOpen(true)}
@@ -55,13 +55,13 @@ const WorkspaceLayout: React.FC = () => {
       />
 
       {/* Main App Content Viewport */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 w-full max-w-full overflow-x-hidden">
         <Header
           onOpenAI={() => setIsAIOpen(true)}
           onOpenDrawer={() => setIsDrawerOpen(true)}
         />
 
-        <main className="flex-1 p-3.5 sm:p-6 overflow-y-auto pb-24 lg:pb-6">
+        <main className="flex-1 p-3 sm:p-5 overflow-y-auto overflow-x-hidden pb-24 lg:pb-6 w-full max-w-full">
           <Outlet />
         </main>
 
