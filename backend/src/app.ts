@@ -61,4 +61,5 @@ app.use(API_PREFIX, aiRoutes);
 // Global Error Handler
 app.use(errorHandler);
 
+module.exports = app;
 export default app;
