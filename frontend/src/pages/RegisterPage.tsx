@@ -57,16 +57,16 @@ export const RegisterPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center p-6 relative overflow-hidden">
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-600/10 blur-[140px] rounded-full pointer-events-none"></div>
+    <div className="min-h-screen bg-slate-950 flex items-center justify-center p-3.5 sm:p-6 py-6 sm:py-10 relative overflow-x-hidden">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 sm:w-[500px] h-80 sm:h-[500px] bg-blue-600/10 blur-[140px] rounded-full pointer-events-none"></div>
 
-      <div className="w-full max-w-xl glass-panel p-8 rounded-3xl shadow-2xl relative z-10">
-        <div className="text-center mb-6">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white font-black text-2xl mx-auto shadow-lg shadow-blue-500/30">
+      <div className="w-full max-w-xl bg-slate-900/90 border border-slate-800 p-5 sm:p-8 rounded-2xl sm:rounded-3xl shadow-2xl relative z-10 backdrop-blur-xl">
+        <div className="text-center mb-5 sm:mb-6">
+          <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white font-black text-xl sm:text-2xl mx-auto shadow-lg shadow-blue-500/30">
             N
           </div>
-          <h2 className="text-2xl font-bold text-white tracking-tight mt-4">Create Organization Workspace</h2>
-          <p className="text-slate-400 text-sm mt-1">
+          <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight mt-3 sm:mt-4">Create Organization Workspace</h2>
+          <p className="text-slate-400 text-xs mt-1">
             Register your business and launch your cloud POS workspace
           </p>
         </div>
@@ -75,9 +75,9 @@ export const RegisterPage: React.FC = () => {
         <button
           type="button"
           onClick={handleGoogleSignIn}
-          className="w-full py-3.5 px-4 bg-slate-900 hover:bg-slate-800 border border-slate-700/80 rounded-xl text-slate-200 text-sm font-semibold flex items-center justify-center gap-3 transition mb-6 shadow-md"
+          className="w-full py-2.5 sm:py-3 px-3 sm:px-4 bg-slate-950/80 hover:bg-slate-800 border border-slate-700/80 rounded-xl text-slate-200 text-xs sm:text-sm font-semibold flex items-center justify-center gap-2.5 transition mb-5 sm:mb-6 shadow-md active:scale-98"
         >
-          <svg className="w-4 h-4" viewBox="0 0 24 24">
+          <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
             <path
               fill="#4285F4"
               d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -95,25 +95,25 @@ export const RegisterPage: React.FC = () => {
               d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
             />
           </svg>
-          <span>Register with Google</span>
+          <span className="truncate">Register with Google</span>
         </button>
 
-        <div className="relative flex items-center justify-center mb-6">
+        <div className="relative flex items-center justify-center mb-5 sm:mb-6">
           <div className="border-t border-slate-800 w-full"></div>
-          <span className="bg-slate-900 px-3 text-xs text-slate-500 font-medium uppercase absolute">Or Fill Business Details</span>
+          <span className="bg-slate-900 px-3 text-[10px] sm:text-xs text-slate-500 font-bold uppercase tracking-wider absolute">Or Fill Business Details</span>
         </div>
 
         {error && (
-          <div className="mb-6 p-4 bg-rose-500/10 border border-rose-500/30 rounded-xl flex items-center gap-3 text-rose-400 text-sm">
-            <AlertCircle className="w-5 h-5 shrink-0" />
-            <span>{error}</span>
+          <div className="mb-5 sm:mb-6 p-3.5 bg-rose-500/10 border border-rose-500/30 rounded-xl flex items-center gap-2.5 text-rose-400 text-xs">
+            <AlertCircle className="w-4 h-4 shrink-0" />
+            <span className="leading-snug">{error}</span>
           </div>
         )}
 
-        <form onSubmit={handleRegister} className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <form onSubmit={handleRegister} className="space-y-3.5 sm:space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">Owner Full Name</label>
+              <label className="block text-[11px] sm:text-xs font-semibold text-slate-300 mb-1 sm:mb-1.5 uppercase tracking-wider">Owner Full Name</label>
               <div className="relative">
                 <User className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
@@ -122,13 +122,13 @@ export const RegisterPage: React.FC = () => {
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="Alice Smith"
-                  className="w-full pl-10 pr-4 py-2.5 bg-slate-900/90 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition"
+                  className="w-full pl-10 pr-4 py-2.5 sm:py-3 bg-slate-950/80 border border-slate-800 rounded-xl text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">Work Email</label>
+              <label className="block text-[11px] sm:text-xs font-semibold text-slate-300 mb-1 sm:mb-1.5 uppercase tracking-wider">Work Email</label>
               <div className="relative">
                 <Mail className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
@@ -137,15 +137,15 @@ export const RegisterPage: React.FC = () => {
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   placeholder="alice@bakery.com"
-                  className="w-full pl-10 pr-4 py-2.5 bg-slate-900/90 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition"
+                  className="w-full pl-10 pr-4 py-2.5 sm:py-3 bg-slate-950/80 border border-slate-800 rounded-xl text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition"
                 />
               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">Password</label>
+              <label className="block text-[11px] sm:text-xs font-semibold text-slate-300 mb-1 sm:mb-1.5 uppercase tracking-wider">Password</label>
               <div className="relative">
                 <Lock className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
@@ -154,13 +154,13 @@ export const RegisterPage: React.FC = () => {
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   placeholder="••••••••"
-                  className="w-full pl-10 pr-4 py-2.5 bg-slate-900/90 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition"
+                  className="w-full pl-10 pr-4 py-2.5 sm:py-3 bg-slate-950/80 border border-slate-800 rounded-xl text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">Phone Number</label>
+              <label className="block text-[11px] sm:text-xs font-semibold text-slate-300 mb-1 sm:mb-1.5 uppercase tracking-wider">Phone Number</label>
               <div className="relative">
                 <Phone className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
@@ -168,14 +168,14 @@ export const RegisterPage: React.FC = () => {
                   value={formData.phoneNumber}
                   onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
                   placeholder="+1 (555) 019-2834"
-                  className="w-full pl-10 pr-4 py-2.5 bg-slate-900/90 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition"
+                  className="w-full pl-10 pr-4 py-2.5 sm:py-3 bg-slate-950/80 border border-slate-800 rounded-xl text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition"
                 />
               </div>
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1.5">Business Name</label>
+            <label className="block text-[11px] sm:text-xs font-semibold text-slate-300 mb-1 sm:mb-1.5 uppercase tracking-wider">Business Name</label>
             <div className="relative">
               <Store className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
@@ -184,15 +184,15 @@ export const RegisterPage: React.FC = () => {
                 value={formData.businessName}
                 onChange={(e) => setFormData({ ...formData, businessName: e.target.value })}
                 placeholder="ABC Bakery & Bistro"
-                className="w-full pl-10 pr-4 py-2.5 bg-slate-900/90 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition"
+                className="w-full pl-10 pr-4 py-2.5 sm:py-3 bg-slate-950/80 border border-slate-800 rounded-xl text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition"
               />
             </div>
           </div>
 
           {/* Business Type Selection */}
           <div>
-            <label className="block text-xs font-medium text-slate-300 mb-2">Select Business Type</label>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+            <label className="block text-[11px] sm:text-xs font-semibold text-slate-300 mb-2 uppercase tracking-wider">Select Business Type</label>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {[
                 { type: 'RESTAURANT', label: 'Restaurant', icon: Utensils },
                 { type: 'CAFE', label: 'Cafe', icon: Utensils },
@@ -206,14 +206,14 @@ export const RegisterPage: React.FC = () => {
                     key={item.type}
                     type="button"
                     onClick={() => setFormData({ ...formData, businessType: item.type as BusinessType })}
-                    className={`p-3 rounded-xl border text-center flex flex-col items-center gap-1.5 transition ${
+                    className={`p-2.5 sm:p-3 rounded-xl border text-center flex flex-col items-center gap-1 transition ${
                       isSelected
                         ? 'bg-blue-600/20 border-blue-500 text-blue-400 font-semibold'
-                        : 'bg-slate-900/60 border-slate-800 text-slate-400 hover:border-slate-700'
+                        : 'bg-slate-950/60 border-slate-800 text-slate-400 hover:border-slate-700'
                     }`}
                   >
-                    <Icon className="w-5 h-5" />
-                    <span className="text-xs">{item.label}</span>
+                    <Icon className="w-4 h-4 sm:w-5 sm:h-5" />
+                    <span className="text-[11px] sm:text-xs">{item.label}</span>
                   </button>
                 );
               })}
@@ -223,7 +223,7 @@ export const RegisterPage: React.FC = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3.5 mt-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 disabled:opacity-50 text-white font-semibold rounded-xl text-sm shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2 transition"
+            className="w-full py-3 sm:py-3.5 mt-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 disabled:opacity-50 text-white font-bold rounded-xl text-xs sm:text-sm shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2 transition active:scale-95"
           >
             {loading ? (
               <>
@@ -232,14 +232,14 @@ export const RegisterPage: React.FC = () => {
               </>
             ) : (
               <>
-                <span>Register Business & Launch Workspace</span>
+                <span>Register & Launch Workspace</span>
                 <ArrowRight className="w-4 h-4" />
               </>
             )}
           </button>
         </form>
 
-        <div className="mt-6 text-center text-xs text-slate-400">
+        <div className="mt-5 sm:mt-6 text-center text-xs text-slate-400">
           Already registered?{' '}
           <Link to="/login" className="text-blue-400 hover:underline font-semibold">
             Log In
