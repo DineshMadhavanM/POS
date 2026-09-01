@@ -83,7 +83,7 @@ export const getSuperAdminTenants = async (req: Request, res: Response) => {
 
     const totalUsersCount = await User.countDocuments();
     const totalInvoices = await Invoice.find({ isRefunded: false });
-    const platformRevenue = totalInvoices.reduce((acc, inv) => acc + (inv.paidAmount || 0), 0);
+    const platformRevenue = totalInvoices.reduce((acc, inv) => acc + (inv.grandTotal || 0), 0);
 
     // 2. Aggregate per-tenant statistics
     const tenants = await Promise.all(
