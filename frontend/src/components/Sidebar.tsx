@@ -32,12 +32,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenAI, isOpen = false, onCl
   const businessType = organization?.businessType || 'RESTAURANT';
 
   const navItems = [
-    { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard, roles: ['OWNER', 'MANAGER', 'WAITER', 'CASHIER'] },
+    { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard, roles: ['OWNER', 'MANAGER', 'WAITER', 'CASHIER', 'KITCHEN_STAFF'] },
     { name: 'Waiter & Menu Order', path: '/menu', icon: Utensils, roles: ['OWNER', 'MANAGER', 'WAITER', 'CASHIER', 'KITCHEN_STAFF'] },
     { name: 'POS Billing', path: '/pos', icon: ShoppingCart, roles: ['OWNER', 'MANAGER', 'CASHIER'] },
     { name: 'Current Orders', path: '/current-orders', icon: ClipboardList, roles: ['OWNER', 'MANAGER', 'WAITER', 'CASHIER', 'KITCHEN_STAFF'] },
-    { name: 'Products', path: '/products', icon: Package, roles: ['OWNER', 'MANAGER', 'CASHIER', 'INVENTORY_STAFF'] },
-    { name: 'Categories', path: '/categories', icon: Layers, roles: ['OWNER', 'MANAGER', 'CASHIER', 'INVENTORY_STAFF'] },
+    { name: 'Products', path: '/products', icon: Package, roles: ['OWNER', 'MANAGER', 'CASHIER', 'INVENTORY_STAFF', 'KITCHEN_STAFF'] },
+    { name: 'Categories', path: '/categories', icon: Layers, roles: ['OWNER', 'MANAGER', 'CASHIER', 'INVENTORY_STAFF', 'KITCHEN_STAFF'] },
     { name: 'Order History', path: '/inventory', icon: ClipboardList, roles: ['OWNER', 'MANAGER', 'INVENTORY_STAFF', 'CASHIER'] },
     { name: 'Customers', path: '/customers', icon: Users, roles: ['OWNER', 'MANAGER', 'CASHIER'] },
     { name: 'Employees', path: '/employees', icon: UserCheck, roles: ['OWNER', 'MANAGER'] },

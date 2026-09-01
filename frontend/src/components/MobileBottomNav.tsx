@@ -7,6 +7,8 @@ import {
   ClipboardList,
   Utensils,
   UtensilsCrossed,
+  Package,
+  Layers,
   BarChart3,
   Menu as MenuIcon
 } from 'lucide-react';
@@ -24,6 +26,12 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({ onOpenDrawer }
     { name: 'Menu Order', path: '/menu', icon: Utensils },
     { name: 'Orders', path: '/current-orders', icon: ClipboardList },
     { name: 'Table & KDS', path: '/restaurant', icon: UtensilsCrossed },
+  ] : role === 'KITCHEN_STAFF' ? [
+    { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+    { name: 'KDS Board', path: '/restaurant', icon: UtensilsCrossed },
+    { name: 'Orders', path: '/current-orders', icon: ClipboardList },
+    { name: 'Products', path: '/products', icon: Package },
+    { name: 'Categories', path: '/categories', icon: Layers },
   ] : [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
     { name: 'Billing', path: '/pos', icon: ShoppingCart },
