@@ -15,11 +15,12 @@ import {
 } from 'lucide-react';
 import {
   ResponsiveContainer,
-  AreaChart,
-  Area,
+  BarChart,
+  Bar,
   XAxis,
   YAxis,
   Tooltip,
+  CartesianGrid,
   PieChart,
   Pie,
   Cell
@@ -314,13 +315,8 @@ export const ReportsPage: React.FC = () => {
                 </div>
               ) : (
                 <ResponsiveContainer width="99%" height="100%">
-                  <AreaChart data={chartData} margin={{ top: 10, right: 5, left: -25, bottom: 0 }}>
-                    <defs>
-                      <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#10b981" stopOpacity={0.4} />
-                        <stop offset="95%" stopColor="#10b981" stopOpacity={0.0} />
-                      </linearGradient>
-                    </defs>
+                  <BarChart data={chartData} margin={{ top: 10, right: 5, left: -25, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
                     <XAxis
                       dataKey="day"
                       axisLine={false}
@@ -334,6 +330,7 @@ export const ReportsPage: React.FC = () => {
                       tickFormatter={(val) => `${currencySymbol}${val}`}
                     />
                     <Tooltip
+                      cursor={{ fill: 'rgba(100, 116, 139, 0.1)', radius: 8 }}
                       contentStyle={{
                         backgroundColor: '#0f172a',
                         borderColor: '#334155',
@@ -348,15 +345,13 @@ export const ReportsPage: React.FC = () => {
                         return item ? `${item.day} (${item.date})` : label;
                       }}
                     />
-                    <Area
-                      type="monotone"
+                    <Bar
                       dataKey="sales"
-                      stroke="#10b981"
-                      strokeWidth={3}
-                      fillOpacity={1}
-                      fill="url(#colorSales)"
+                      fill="#10b981"
+                      radius={[6, 6, 0, 0]}
+                      maxBarSize={48}
                     />
-                  </AreaChart>
+                  </BarChart>
                 </ResponsiveContainer>
               )}
             </div>
