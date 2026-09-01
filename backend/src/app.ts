@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import { connectDB } from './config/db';
 import { errorHandler } from './middlewares/errorHandler';
 
 import authRoutes from './routes/authRoutes';
@@ -29,6 +30,16 @@ if (process.env.NODE_ENV !== 'test') {
 // Health Check
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'UP', service: 'NexStack POS API', timestamp: new Date() });
+});
+
+// Ensure MongoDB connection before route execution (essential for Vercel serverless)
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+  } catch (err) {
+    console.error('[DB Middleware Connection Error]', err);
+  }
+  next();
 });
 
 // API Routes (v1)
