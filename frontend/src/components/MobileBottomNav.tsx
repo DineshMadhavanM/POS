@@ -1,10 +1,12 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
+import { useAuthStore } from '../store/useAuthStore';
 import {
   LayoutDashboard,
   ShoppingCart,
   ClipboardList,
   Utensils,
+  UtensilsCrossed,
   BarChart3,
   Menu as MenuIcon
 } from 'lucide-react';
@@ -15,8 +17,14 @@ interface MobileBottomNavProps {
 
 export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({ onOpenDrawer }) => {
   const location = useLocation();
+  const { role } = useAuthStore();
 
-  const navItems = [
+  const navItems = role === 'WAITER' ? [
+    { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+    { name: 'Menu Order', path: '/menu', icon: Utensils },
+    { name: 'Orders', path: '/current-orders', icon: ClipboardList },
+    { name: 'Table & KDS', path: '/restaurant', icon: UtensilsCrossed },
+  ] : [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
     { name: 'Billing', path: '/pos', icon: ShoppingCart },
     { name: 'Orders', path: '/current-orders', icon: ClipboardList },
