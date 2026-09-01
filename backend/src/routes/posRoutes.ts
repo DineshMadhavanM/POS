@@ -10,10 +10,10 @@ const router = Router();
 router.use(authenticate, verifyTenant);
 
 router.get('/orders', getOrders);
-router.post('/orders', requireRole([UserRole.OWNER, UserRole.ADMIN, UserRole.CASHIER]), createOrder);
-router.delete('/orders/:id', requireRole([UserRole.OWNER, UserRole.ADMIN]), deleteOrder);
-router.post('/checkout', requireRole([UserRole.OWNER, UserRole.ADMIN, UserRole.CASHIER]), checkoutInvoice);
+router.post('/orders', requireRole([UserRole.OWNER, UserRole.ADMIN, UserRole.MANAGER, UserRole.CASHIER, UserRole.WAITER]), createOrder);
+router.delete('/orders/:id', requireRole([UserRole.OWNER, UserRole.ADMIN, UserRole.MANAGER]), deleteOrder);
+router.post('/checkout', requireRole([UserRole.OWNER, UserRole.ADMIN, UserRole.MANAGER, UserRole.CASHIER]), checkoutInvoice);
 router.get('/invoices', getInvoices);
-router.post('/invoices/:id/refund', requireRole([UserRole.OWNER, UserRole.ADMIN]), refundInvoice);
+router.post('/invoices/:id/refund', requireRole([UserRole.OWNER, UserRole.ADMIN, UserRole.MANAGER]), refundInvoice);
 
 export default router;
