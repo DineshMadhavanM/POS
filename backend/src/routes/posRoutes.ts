@@ -12,7 +12,7 @@ router.use(authenticate, verifyTenant);
 router.get('/orders', getOrders);
 router.post('/orders', requireRole([UserRole.OWNER, UserRole.ADMIN, UserRole.MANAGER, UserRole.CASHIER, UserRole.WAITER]), createOrder);
 router.delete('/orders/:id', requireRole([UserRole.OWNER, UserRole.ADMIN, UserRole.MANAGER]), deleteOrder);
-router.post('/checkout', requireRole([UserRole.OWNER, UserRole.ADMIN, UserRole.MANAGER, UserRole.CASHIER]), checkoutInvoice);
+router.post('/checkout', requireRole([UserRole.OWNER, UserRole.ADMIN, UserRole.MANAGER, UserRole.CASHIER, UserRole.WAITER]), checkoutInvoice);
 router.get('/invoices', getInvoices);
 router.post('/invoices/:id/refund', requireRole([UserRole.OWNER, UserRole.ADMIN, UserRole.MANAGER]), refundInvoice);
 
