@@ -31,6 +31,8 @@ export const EmployeeLoginPage: React.FC = () => {
         // Smart Role-Based Redirection
         if (role === 'CASHIER') {
           navigate('/pos');
+        } else if (role === 'WAITER') {
+          navigate('/menu');
         } else if (role === 'KITCHEN_STAFF') {
           navigate('/restaurant');
         } else if (role === 'INVENTORY_STAFF') {

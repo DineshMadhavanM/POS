@@ -1,11 +1,12 @@
 export type BusinessType = 'RESTAURANT' | 'CAFE' | 'BAKERY' | 'RETAIL';
-export type UserRole = 'OWNER' | 'ADMIN' | 'MANAGER' | 'CASHIER' | 'KITCHEN_STAFF' | 'INVENTORY_STAFF';
+export type UserRole = 'OWNER' | 'ADMIN' | 'MANAGER' | 'CASHIER' | 'WAITER' | 'KITCHEN_STAFF' | 'INVENTORY_STAFF';
 
 export const UserRole = {
   OWNER: 'OWNER',
   ADMIN: 'ADMIN',
   MANAGER: 'MANAGER',
   CASHIER: 'CASHIER',
+  WAITER: 'WAITER',
   KITCHEN_STAFF: 'KITCHEN_STAFF',
   INVENTORY_STAFF: 'INVENTORY_STAFF'
 } as const;

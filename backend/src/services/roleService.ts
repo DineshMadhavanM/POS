@@ -30,6 +30,12 @@ export class RoleService {
         permissions: DEFAULT_ROLE_PERMISSIONS.CASHIER
       },
       {
+        name: 'Waiter',
+        code: UserRole.WAITER,
+        description: 'Table order management, waiter menu ordering, and KDS ticketing',
+        permissions: DEFAULT_ROLE_PERMISSIONS.WAITER
+      },
+      {
         name: 'Kitchen Staff',
         code: UserRole.KITCHEN_STAFF,
         description: 'Kitchen Display System (KDS) order status management',

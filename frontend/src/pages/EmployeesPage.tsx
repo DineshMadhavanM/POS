@@ -195,10 +195,10 @@ export const EmployeesPage: React.FC = () => {
                   onChange={(e) => setFormData({ ...formData, role: e.target.value })}
                   className="w-full px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-blue-500 font-medium"
                 >
-                  <option value="MANAGER">MANAGER (Operations & Inventory)</option>
+                  <option value="MANAGER">MANAGER (Operations & Store Management)</option>
                   <option value="CASHIER">CASHIER (POS Billing Counter)</option>
+                  <option value="WAITER">WAITER (Waiter Menu & Floor Order)</option>
                   <option value="KITCHEN_STAFF">KITCHEN STAFF (Kitchen Display KDS Board)</option>
-                  <option value="INVENTORY_STAFF">INVENTORY STAFF (Stock Updates)</option>
                 </select>
               </div>
 
