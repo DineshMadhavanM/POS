@@ -9,9 +9,9 @@ const router = Router();
 
 router.use(authenticate, verifyTenant);
 
-router.post('/inventory/adjust', requireRole([UserRole.OWNER, UserRole.ADMIN, UserRole.INVENTORY_STAFF]), adjustStock);
-router.get('/inventory/movements', requireRole([UserRole.OWNER, UserRole.ADMIN, UserRole.INVENTORY_STAFF]), getStockMovements);
+router.post('/inventory/adjust', requireRole([UserRole.OWNER, UserRole.ADMIN, UserRole.MANAGER, UserRole.INVENTORY_STAFF]), adjustStock);
+router.get('/inventory/movements', getStockMovements);
 router.get('/suppliers', getSuppliers);
-router.post('/suppliers', requireRole([UserRole.OWNER, UserRole.ADMIN, UserRole.INVENTORY_STAFF]), createSupplier);
+router.post('/suppliers', requireRole([UserRole.OWNER, UserRole.ADMIN, UserRole.MANAGER, UserRole.INVENTORY_STAFF]), createSupplier);
 
 export default router;
