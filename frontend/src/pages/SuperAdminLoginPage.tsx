@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { api } from '../services/api';
-import { ShieldCheck, Lock, Mail, AlertCircle, Loader2, ArrowRight, ArrowLeft } from 'lucide-react';
+import { ShieldCheck, Lock, Mail, AlertCircle, Loader2, ArrowRight, ArrowLeft, Eye, EyeOff } from 'lucide-react';
 
 export const SuperAdminLoginPage: React.FC = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('dadmin@nexstack.com');
-  const [password, setPassword] = useState('DMaddy@003');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -76,8 +77,8 @@ export const SuperAdminLoginPage: React.FC = () => {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="dadmin@nexstack.com"
-                className="w-full pl-10 pr-4 py-2.5 sm:py-3 bg-slate-950/80 border border-slate-800 focus:border-purple-500 rounded-xl text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none transition"
+                placeholder="Enter admin email address..."
+                className="w-full pl-10 pr-4 py-2.5 sm:py-3 bg-slate-950/80 border border-slate-800 focus:border-purple-500 rounded-xl text-xs sm:text-sm text-white placeholder-slate-600 focus:outline-none transition"
               />
             </div>
           </div>
@@ -89,13 +90,20 @@ export const SuperAdminLoginPage: React.FC = () => {
             <div className="relative">
               <Lock className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full pl-10 pr-4 py-2.5 sm:py-3 bg-slate-950/80 border border-slate-800 focus:border-purple-500 rounded-xl text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none transition"
+                placeholder="Enter master password..."
+                className="w-full pl-10 pr-10 py-2.5 sm:py-3 bg-slate-950/80 border border-slate-800 focus:border-purple-500 rounded-xl text-xs sm:text-sm text-white placeholder-slate-600 focus:outline-none transition"
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition"
+              >
+                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
             </div>
           </div>
 
