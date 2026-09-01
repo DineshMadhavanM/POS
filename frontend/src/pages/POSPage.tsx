@@ -217,9 +217,9 @@ export const POSPage: React.FC = () => {
         </div>
 
         {/* Products Grid */}
-        <div className="flex-1 overflow-y-auto grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4 pr-1 items-start content-start">
+        <div className="flex-1 overflow-y-auto grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-4 pr-1 items-start content-start">
           {filteredProducts.length === 0 ? (
-            <div className="col-span-full py-16 text-center text-slate-500">
+            <div className="col-span-full py-16 text-center text-slate-500 text-xs sm:text-sm">
               No products found matching filters.
             </div>
           ) : (
@@ -231,7 +231,7 @@ export const POSPage: React.FC = () => {
                 <div
                   key={p._id}
                   onClick={() => cart.addItem(p)}
-                  className={`p-4 rounded-2xl border text-left flex flex-col justify-between cursor-pointer transition-all duration-200 group shadow-xl relative overflow-hidden self-start min-h-[140px] ${
+                  className={`p-3 sm:p-4 rounded-xl sm:rounded-2xl border text-left flex flex-col justify-between cursor-pointer transition-all duration-200 group shadow-xl relative overflow-hidden self-start min-h-[130px] sm:min-h-[140px] min-w-0 ${
                     qtyInCart > 0
                       ? 'bg-slate-900 border-blue-500/60 ring-1 ring-blue-500/30'
                       : 'bg-slate-900/90 hover:bg-slate-800/90 border-slate-800 hover:border-blue-500/40'
@@ -239,29 +239,29 @@ export const POSPage: React.FC = () => {
                 >
                   {/* Quantity Badge if in cart */}
                   {qtyInCart > 0 && (
-                    <div className="absolute top-2.5 right-2.5 px-2.5 py-0.5 rounded-full bg-blue-600 text-white font-extrabold text-[10px] shadow-md flex items-center gap-1">
+                    <div className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-blue-600 text-white font-extrabold text-[9px] sm:text-[10px] shadow-md flex items-center gap-1 z-10">
                       <span>{qtyInCart} in cart</span>
                     </div>
                   )}
 
-                  <div>
-                    <div className="flex items-center justify-between gap-1 mb-2">
-                      <span className="text-[10px] font-mono text-slate-500">{p.sku || p.barcode || 'ITEM'}</span>
+                  <div className="min-w-0">
+                    <div className="flex items-center justify-between gap-1.5 mb-2 min-w-0">
+                      <span className="text-[9px] sm:text-[10px] font-mono text-slate-500 truncate">{p.sku || p.barcode || 'ITEM'}</span>
                       {!p.isService && (
-                        <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase ${
+                        <span className={`text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded-md font-bold uppercase shrink-0 whitespace-nowrap ${
                           p.currentStock <= p.minimumStock ? 'bg-rose-500/20 text-rose-400' : 'bg-emerald-500/10 text-emerald-400'
                         }`}>
                           Stock: {p.currentStock}
                         </span>
                       )}
                     </div>
-                    <h4 className="font-bold text-white text-sm line-clamp-2 group-hover:text-blue-400 transition leading-snug">{p.name}</h4>
+                    <h4 className="font-bold text-white text-xs sm:text-sm line-clamp-2 group-hover:text-blue-400 transition leading-snug break-words">{p.name}</h4>
                   </div>
 
-                  <div className="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between gap-2">
-                    <div>
-                      <span className="text-[10px] text-slate-400 block">Price</span>
-                      <span className="text-base font-extrabold text-blue-400 font-mono">
+                  <div className="mt-2.5 sm:mt-3 pt-2 sm:pt-2.5 border-t border-slate-800/80 flex items-center justify-between gap-1 min-w-0">
+                    <div className="min-w-0">
+                      <span className="text-[9px] sm:text-[10px] text-slate-400 block font-medium leading-none">Price</span>
+                      <span className="text-xs sm:text-base font-extrabold text-blue-400 font-mono block mt-0.5 truncate">
                         {currencySymbol}{p.sellingPrice.toFixed(2)}
                       </span>
                     </div>
@@ -272,14 +272,14 @@ export const POSPage: React.FC = () => {
                         e.stopPropagation();
                         cart.addItem(p);
                       }}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md transition ${
+                      className={`h-7 px-2 sm:h-auto sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-bold flex items-center justify-center gap-1 shadow-md transition shrink-0 ${
                         qtyInCart > 0
                           ? 'bg-blue-600 hover:bg-blue-500 text-white shadow-blue-600/20'
                           : 'bg-slate-800 hover:bg-blue-600 text-slate-200 hover:text-white border border-slate-700 hover:border-blue-500'
                       }`}
                     >
-                      <Plus className="w-3.5 h-3.5" />
-                      <span>{qtyInCart > 0 ? 'Add More' : 'Add'}</span>
+                      <Plus className="w-3.5 h-3.5 shrink-0" />
+                      <span className="hidden xs:inline">{qtyInCart > 0 ? 'Add' : 'Add'}</span>
                     </button>
                   </div>
                 </div>

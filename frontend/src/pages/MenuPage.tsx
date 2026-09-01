@@ -190,17 +190,17 @@ export const MenuPage: React.FC = () => {
   }
 
   return (
-    <div className="h-[calc(100vh-100px)] flex flex-col lg:flex-row gap-6">
-      {/* LEFT: Menu Catalog Grid (Same functional layout as POS Billing) */}
-      <div className="flex-1 flex flex-col min-w-0 bg-slate-900/60 border border-slate-800 rounded-3xl p-5 shadow-2xl overflow-hidden">
+    <div className="h-[calc(100vh-100px)] flex flex-col lg:flex-row gap-4 sm:gap-6">
+      {/* LEFT: Menu Catalog Grid */}
+      <div className="flex-1 flex flex-col min-w-0 bg-slate-900/60 border border-slate-800 rounded-2xl sm:rounded-3xl p-3 sm:p-5 shadow-2xl overflow-hidden">
         {/* Header & Search */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3 sm:mb-4">
           <div>
-            <h1 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
-              <Utensils className="w-5 h-5 text-emerald-400" />
+            <h1 className="text-lg sm:text-xl font-bold text-white tracking-tight flex items-center gap-2">
+              <Utensils className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-400" />
               <span>Waiter Menu Order</span>
             </h1>
-            <p className="text-xs text-slate-400 mt-0.5">Select menu items and dispatch directly to Kitchen Display System (KDS)</p>
+            <p className="text-[11px] sm:text-xs text-slate-400 mt-0.5">Select menu items and dispatch directly to Kitchen Display System (KDS)</p>
           </div>
 
           <div className="relative w-full sm:w-64">
@@ -210,16 +210,16 @@ export const MenuPage: React.FC = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search food items..."
-              className="w-full pl-10 pr-4 py-2.5 bg-slate-800/90 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition"
+              className="w-full pl-10 pr-4 py-2 sm:py-2.5 bg-slate-800/90 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition"
             />
           </div>
         </div>
 
         {/* Category Filter Pills */}
-        <div className="flex gap-2 overflow-x-auto pb-3 scrollbar-none mb-4">
+        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none mb-3">
           <button
             onClick={() => setSelectedCategory('ALL')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition ${
+            className={`px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs font-bold whitespace-nowrap transition ${
               selectedCategory === 'ALL'
                 ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-500/20'
                 : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white'
@@ -231,7 +231,7 @@ export const MenuPage: React.FC = () => {
             <button
               key={cat._id}
               onClick={() => setSelectedCategory(cat._id)}
-              className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition ${
+              className={`px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs font-bold whitespace-nowrap transition ${
                 selectedCategory === cat._id
                   ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-500/20'
                   : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white'
@@ -243,9 +243,9 @@ export const MenuPage: React.FC = () => {
         </div>
 
         {/* Product Cards Grid */}
-        <div className="flex-1 overflow-y-auto pr-1 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 xl:grid-cols-4 gap-4 items-start content-start">
+        <div className="flex-1 overflow-y-auto pr-1 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-4 items-start content-start">
           {filteredProducts.length === 0 ? (
-            <div className="col-span-full py-16 text-center text-slate-500">
+            <div className="col-span-full py-16 text-center text-slate-500 text-xs sm:text-sm">
               No menu items match your search.
             </div>
           ) : (
@@ -257,7 +257,7 @@ export const MenuPage: React.FC = () => {
                 <div
                   key={p._id}
                   onClick={() => handleAddProduct(p)}
-                  className={`p-4 rounded-2xl border text-left flex flex-col justify-between cursor-pointer transition-all duration-200 group shadow-xl relative overflow-hidden self-start min-h-[140px] ${
+                  className={`p-3 sm:p-4 rounded-xl sm:rounded-2xl border text-left flex flex-col justify-between cursor-pointer transition-all duration-200 group shadow-xl relative overflow-hidden self-start min-h-[130px] sm:min-h-[140px] min-w-0 ${
                     qtyInTicket > 0
                       ? 'bg-slate-900 border-emerald-500/60 ring-1 ring-emerald-500/30'
                       : 'bg-slate-900/90 hover:bg-slate-800/90 border-slate-800 hover:border-emerald-500/40'
@@ -265,30 +265,30 @@ export const MenuPage: React.FC = () => {
                 >
                   {/* Quantity Badge if in ticket */}
                   {qtyInTicket > 0 && (
-                    <div className="absolute top-2.5 right-2.5 px-2.5 py-0.5 rounded-full bg-emerald-500 text-slate-950 font-extrabold text-[10px] shadow-md flex items-center gap-1">
+                    <div className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-emerald-500 text-slate-950 font-extrabold text-[9px] sm:text-[10px] shadow-md flex items-center gap-1 z-10">
                       <span>{qtyInTicket} in order</span>
                     </div>
                   )}
 
-                  <div>
-                    <div className="flex items-center justify-between gap-2 mb-2.5">
-                      <div className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
-                        <Utensils className="w-4 h-4" />
+                  <div className="min-w-0">
+                    <div className="flex items-center justify-between gap-1.5 mb-2 min-w-0">
+                      <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+                        <Utensils className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                       </div>
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-800 border border-slate-700 text-slate-300">
+                      <span className="text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-slate-800 border border-slate-700 text-slate-300 shrink-0 whitespace-nowrap">
                         Stock: {p.currentStock}
                       </span>
                     </div>
 
-                    <h4 className="font-bold text-white text-sm line-clamp-2 group-hover:text-emerald-400 transition leading-snug">
+                    <h4 className="font-bold text-white text-xs sm:text-sm line-clamp-2 group-hover:text-emerald-400 transition leading-snug break-words">
                       {p.name}
                     </h4>
                   </div>
 
-                  <div className="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between gap-2">
-                    <div>
-                      <span className="text-[10px] text-slate-400 block font-medium">Price</span>
-                      <span className="text-base font-extrabold text-emerald-400 font-mono">
+                  <div className="mt-2.5 sm:mt-3 pt-2 sm:pt-2.5 border-t border-slate-800/80 flex items-center justify-between gap-1 min-w-0">
+                    <div className="min-w-0">
+                      <span className="text-[9px] sm:text-[10px] text-slate-400 block font-medium leading-none">Price</span>
+                      <span className="text-xs sm:text-base font-extrabold text-emerald-400 font-mono block mt-0.5 truncate">
                         ₹{p.sellingPrice.toFixed(2)}
                       </span>
                     </div>
@@ -299,14 +299,14 @@ export const MenuPage: React.FC = () => {
                         e.stopPropagation();
                         handleAddProduct(p);
                       }}
-                      className={`px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md transition ${
+                      className={`h-7 px-2 sm:h-auto sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-bold flex items-center justify-center gap-1 shadow-md transition shrink-0 ${
                         qtyInTicket > 0
                           ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-600/20'
                           : 'bg-slate-800 hover:bg-emerald-600 text-slate-200 hover:text-white border border-slate-700 hover:border-emerald-500'
                       }`}
                     >
-                      <Plus className="w-3.5 h-3.5" />
-                      <span>{qtyInTicket > 0 ? 'Add More' : 'Add'}</span>
+                      <Plus className="w-3.5 h-3.5 shrink-0" />
+                      <span className="hidden xs:inline">{qtyInTicket > 0 ? 'Add' : 'Add'}</span>
                     </button>
                   </div>
                 </div>
