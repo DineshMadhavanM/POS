@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { api } from '../services/api';
 import { useAuthStore } from '../store/useAuthStore';
 import { signInWithGoogle } from '../services/supabase';
+import { getErrorMessage } from '../utils/errorHelper';
 import { LogIn, Mail, Lock, AlertCircle, Loader2, Building2, Users } from 'lucide-react';
 
 export const LoginPage: React.FC = () => {
@@ -20,14 +21,14 @@ export const LoginPage: React.FC = () => {
     setLoading(true);
 
     try {
-      const res = await api.post('/login', { email, password });
+      const res = await api.post('/login', { email: email.trim(), password });
       if (res.data.success) {
         const { user, organization, role, accessToken, refreshToken, permissions } = res.data.data;
         setAuth(user, organization, role, accessToken, refreshToken, permissions);
         navigate('/dashboard');
       }
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Failed to sign in. Please check your admin credentials.');
+      setError(getErrorMessage(err, 'Failed to sign in. Please check your admin credentials.'));
     } finally {
       setLoading(false);
     }
@@ -38,7 +39,7 @@ export const LoginPage: React.FC = () => {
       setError('');
       await signInWithGoogle();
     } catch (err: any) {
-      setError(err.message || 'Failed to initiate Google OAuth sign-in.');
+      setError(getErrorMessage(err, 'Failed to initiate Google OAuth sign-in.'));
     }
   };
 

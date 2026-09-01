@@ -6,7 +6,7 @@ dotenv.config({ path: path.join(__dirname, '../../.env') });
 export const env = {
   PORT: process.env.PORT || 5000,
   NODE_ENV: process.env.NODE_ENV || 'development',
-  MONGO_URI: process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/nexstack_pos',
+  MONGO_URI: process.env.MONGO_URI || 'mongodb+srv://kit27ad17:Aidsdr-003@cluster0.nl8lf1t.mongodb.net/nineteen06?retryWrites=true&w=majority',
   JWT_SECRET: process.env.JWT_SECRET || 'nexstack_super_secret_jwt_access_key_2026',
   JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET || 'nexstack_super_secret_jwt_refresh_key_2026',
   JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN || '24h',

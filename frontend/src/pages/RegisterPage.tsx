@@ -3,6 +3,7 @@ import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { api } from '../services/api';
 import { useAuthStore } from '../store/useAuthStore';
 import { signInWithGoogle } from '../services/supabase';
+import { getErrorMessage } from '../utils/errorHelper';
 import { BusinessType } from '../types';
 import { Store, Utensils, Cake, Barcode, User, Mail, Lock, Phone, AlertCircle, Loader2, ArrowRight } from 'lucide-react';
 
@@ -38,9 +39,9 @@ export const RegisterPage: React.FC = () => {
     } catch (err: any) {
       const details = err.response?.data?.details;
       if (Array.isArray(details) && details.length > 0) {
-        setError(details.map((d: any) => `${d.path.join('.')}: ${d.message}`).join(', '));
+        setError(details.map((d: any) => `${d.path ? d.path.join('.') : 'field'}: ${d.message}`).join(', '));
       } else {
-        setError(err.response?.data?.error || 'Registration failed. Please check your inputs.');
+        setError(getErrorMessage(err, 'Registration failed. Please check your inputs.'));
       }
     } finally {
       setLoading(false);
@@ -52,7 +53,7 @@ export const RegisterPage: React.FC = () => {
       setError('');
       await signInWithGoogle();
     } catch (err: any) {
-      setError(err.message || 'Failed to initiate Google OAuth sign-in.');
+      setError(getErrorMessage(err, 'Failed to initiate Google OAuth sign-in.'));
     }
   };
 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { api } from '../services/api';
+import { getErrorMessage } from '../utils/errorHelper';
 import { ShieldCheck, Lock, Mail, AlertCircle, Loader2, ArrowRight, ArrowLeft, Eye, EyeOff } from 'lucide-react';
 
 export const SuperAdminLoginPage: React.FC = () => {
@@ -27,7 +28,7 @@ export const SuperAdminLoginPage: React.FC = () => {
         navigate('/super-admin');
       }
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Invalid Super Admin credentials.');
+      setError(getErrorMessage(err, 'Invalid Super Admin credentials.'));
     } finally {
       setLoading(false);
     }

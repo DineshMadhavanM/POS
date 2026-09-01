@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '../services/supabase';
 import { api } from '../services/api';
 import { useAuthStore } from '../store/useAuthStore';
+import { getErrorMessage } from '../utils/errorHelper';
 import { Loader2, AlertCircle } from 'lucide-react';
 
 export const AuthCallbackPage: React.FC = () => {
@@ -41,7 +42,7 @@ export const AuthCallbackPage: React.FC = () => {
           }
         }
       } catch (err: any) {
-        setError(err.response?.data?.error || err.message || 'Google authentication failed.');
+        setError(getErrorMessage(err, 'Google authentication failed.'));
       }
     };
 

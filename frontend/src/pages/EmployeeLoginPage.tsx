@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { api } from '../services/api';
 import { useAuthStore } from '../store/useAuthStore';
+import { getErrorMessage } from '../utils/errorHelper';
 import { Building2, Lock, AlertCircle, Loader2, ArrowRight, ShieldCheck, Users } from 'lucide-react';
 
 export const EmployeeLoginPage: React.FC = () => {
@@ -42,7 +43,7 @@ export const EmployeeLoginPage: React.FC = () => {
         }
       }
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Invalid Company ID, Employee ID, or password.');
+      setError(getErrorMessage(err, 'Invalid Company ID, Employee ID, or password.'));
     } finally {
       setLoading(false);
     }
