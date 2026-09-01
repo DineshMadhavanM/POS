@@ -12,15 +12,20 @@ export const connectDB = async (): Promise<string> => {
     let uri = env.MONGO_URI;
 
     try {
-      await mongoose.connect(uri, { serverSelectionTimeoutMS: 2000 });
+      console.log('[MongoDB] Connecting to MongoDB Atlas Cloud...');
+      await mongoose.connect(uri, {
+        serverSelectionTimeoutMS: 25000,
+        connectTimeoutMS: 25000
+      });
       console.log(`[MongoDB] Connected successfully to primary URI: ${uri}`);
       return uri;
-    } catch (err) {
-      console.warn('[MongoDB] Primary URI connection failed or timed out. Initializing MongoMemoryServer fallback...');
+    } catch (err: any) {
+      console.warn('[MongoDB Atlas Warning] Primary Atlas connection failed or timed out:', err.message);
+      console.warn('[MongoDB] Initializing MongoMemoryServer fallback...');
       mongod = await MongoMemoryServer.create();
       uri = mongod.getUri();
       await mongoose.connect(uri);
-      console.log(`[MongoDB Memory Server] Connected successfully to in-memory database: ${uri}`);
+      console.log(`[MongoDB Memory Server] Connected to in-memory database: ${uri}`);
       return uri;
     }
   } catch (error) {
