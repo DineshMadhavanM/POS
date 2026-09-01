@@ -12,12 +12,36 @@ export const AuthCallbackPage: React.FC = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
+    let isMounted = true;
+
     const handleGoogleAuthCallback = async () => {
       try {
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        const searchParams = new URLSearchParams(window.location.search);
+        const hashParams = new URLSearchParams(window.location.hash.replace(/^#\/?/, '').split('?')[1] || '');
+        const code = searchParams.get('code') || hashParams.get('code');
 
-        if (sessionError || !session?.user) {
-          throw new Error(sessionError?.message || 'Failed to retrieve Google OAuth session.');
+        let session = null;
+
+        if (code) {
+          try {
+            const { data } = await supabase.auth.exchangeCodeForSession(code);
+            if (data?.session) {
+              session = data.session;
+            }
+          } catch (e) {
+            console.warn('[Supabase Exchange Code Notice]', e);
+          }
+        }
+
+        if (!session) {
+          const { data } = await supabase.auth.getSession();
+          if (data?.session) {
+            session = data.session;
+          }
+        }
+
+        if (!session?.user) {
+          throw new Error('Failed to retrieve active Google OAuth session. Please try logging in again.');
         }
 
         const supabaseUser = session.user;
@@ -32,6 +56,8 @@ export const AuthCallbackPage: React.FC = () => {
           avatarUrl
         });
 
+        if (!isMounted) return;
+
         if (res.data.success) {
           if (res.data.data.isNewUser) {
             navigate('/register', { state: { email, name } });
@@ -42,11 +68,17 @@ export const AuthCallbackPage: React.FC = () => {
           }
         }
       } catch (err: any) {
+        if (!isMounted) return;
+        console.error('[Google Auth Callback Error]', err);
         setError(getErrorMessage(err, 'Google authentication failed.'));
       }
     };
 
     handleGoogleAuthCallback();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   return (

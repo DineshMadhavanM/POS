@@ -77,10 +77,25 @@ const WorkspaceLayout: React.FC = () => {
   );
 };
 
+const OAuthRedirectHandler: React.FC = () => {
+  useEffect(() => {
+    const search = window.location.search;
+    const hash = window.location.hash;
+    if (search.includes('code=') || hash.includes('code=')) {
+      if (!hash.includes('/auth/callback')) {
+        window.location.hash = `/auth/callback${search}`;
+      }
+    }
+  }, []);
+
+  return null;
+};
+
 export const App: React.FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+        <OAuthRedirectHandler />
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<LandingPage />} />
