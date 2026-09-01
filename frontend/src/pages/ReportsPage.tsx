@@ -101,8 +101,7 @@ export const ReportsPage: React.FC = () => {
     csvContent += "PAYMENT BREAKDOWN\n";
     csvContent += `UPI Payments,${payments.breakdown.upi.count} transactions,${currencySymbol}${payments.breakdown.upi.total}\n`;
     csvContent += `Card Payments,${payments.breakdown.card.count} transactions,${currencySymbol}${payments.breakdown.card.total}\n`;
-    csvContent += `Cash Payments,${payments.breakdown.cash.count} transactions,${currencySymbol}${payments.breakdown.cash.total}\n`;
-    csvContent += `Credit Payments,${payments.breakdown.credit.count} transactions,${currencySymbol}${payments.breakdown.credit.total} (Pending: ${currencySymbol}${payments.breakdown.credit.pending})\n\n`;
+    csvContent += `Cash Payments,${payments.breakdown.cash.count} transactions,${currencySymbol}${payments.breakdown.cash.total}\n\n`;
 
     // Top Products Section
     csvContent += "TOP SELLING PRODUCTS\n";
@@ -539,27 +538,6 @@ export const ReportsPage: React.FC = () => {
                 <span className="text-lg font-extrabold text-amber-300">
                   {currencySymbol}{payments.breakdown.cash.total.toLocaleString()}
                 </span>
-              </div>
-
-              {/* Credit */}
-              <div className="bg-rose-950/30 border border-rose-500/20 hover:border-rose-500/40 p-4 rounded-2xl flex items-center justify-between transition">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-rose-600/20 border border-rose-500/30 flex items-center justify-center text-rose-400">
-                    <Clock className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-white text-sm">Credit</h4>
-                    <p className="text-xs text-slate-400">{payments.breakdown.credit.count} payments today</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <span className="text-xs font-bold text-rose-400 uppercase tracking-wider block">
-                    (-) {currencySymbol}{payments.breakdown.credit.pending.toLocaleString()} PENDING
-                  </span>
-                  <span className="text-lg font-extrabold text-rose-300">
-                    {currencySymbol}{payments.breakdown.credit.total.toLocaleString()}
-                  </span>
-                </div>
               </div>
             </div>
           </div>
