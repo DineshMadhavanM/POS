@@ -1,47 +1,54 @@
 import mongoose from 'mongoose';
-import { MongoMemoryServer } from 'mongodb-memory-server';
 import { env } from './env';
 
-let mongod: MongoMemoryServer | null = null;
+/**
+ * Global cached database connection for serverless / lambda environments
+ */
+let isConnecting = false;
 
 export const connectDB = async (): Promise<string> => {
+  // If already connected
+  if ((mongoose.connection.readyState as number) === 1) {
+    return env.MONGO_URI;
+  }
+
+  if (isConnecting) {
+    // Wait for in-progress connection
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    if ((mongoose.connection.readyState as number) === 1) return env.MONGO_URI;
+  }
+
   try {
-    // Set Mongoose options
+    isConnecting = true;
     mongoose.set('strictQuery', true);
 
-    let uri = env.MONGO_URI;
+    const uri = env.MONGO_URI || 'mongodb+srv://kit27ad17:Aidsdr-003@cluster0.nl8lf1t.mongodb.net/nineteen06?retryWrites=true&w=majority';
+    console.log('[MongoDB] Connecting to MongoDB Atlas Cloud Database...');
 
-    try {
-      console.log('[MongoDB] Connecting to MongoDB Atlas Cloud...');
-      await mongoose.connect(uri, {
-        serverSelectionTimeoutMS: 25000,
-        connectTimeoutMS: 25000
-      });
-      console.log(`[MongoDB] Connected successfully to primary URI: ${uri}`);
-      return uri;
-    } catch (err: any) {
-      console.warn('[MongoDB Atlas Warning] Primary Atlas connection failed or timed out:', err.message);
-      console.warn('[MongoDB] Initializing MongoMemoryServer fallback...');
-      mongod = await MongoMemoryServer.create();
-      uri = mongod.getUri();
-      await mongoose.connect(uri);
-      console.log(`[MongoDB Memory Server] Connected to in-memory database: ${uri}`);
-      return uri;
-    }
-  } catch (error) {
-    console.error('[MongoDB Error] Database connection failure:', error);
-    process.exit(1);
+    await mongoose.connect(uri, {
+      serverSelectionTimeoutMS: 15000,
+      connectTimeoutMS: 15000,
+      socketTimeoutMS: 45000,
+      maxPoolSize: 10
+    });
+
+    console.log('[MongoDB] Connected successfully to MongoDB Atlas Cloud');
+    return uri;
+  } catch (error: any) {
+    console.error('[MongoDB Error] Database connection failure:', error.message || error);
+    throw error;
+  } finally {
+    isConnecting = false;
   }
 };
 
 export const disconnectDB = async (): Promise<void> => {
   try {
-    await mongoose.disconnect();
-    if (mongod) {
-      await mongod.stop();
+    if ((mongoose.connection.readyState as number) !== 0) {
+      await mongoose.disconnect();
+      console.log('[MongoDB] Disconnected successfully');
     }
-    console.log('[MongoDB] Disconnected successfully');
-  } catch (error) {
-    console.error('[MongoDB Error] Disconnect failure:', error);
+  } catch (error: any) {
+    console.error('[MongoDB Error] Disconnect failure:', error.message || error);
   }
 };

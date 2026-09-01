@@ -56,27 +56,31 @@ export const superAdminLogin = async (req: Request, res: Response) => {
     }
 
     // Also support any registered owner/admin with database password fallback
-    const user = await User.findOne({ email: cleanEmail });
-    if (user) {
-      const isMatch = await bcrypt.compare(cleanPassword, user.passwordHash);
-      if (isMatch || isMasterPassword) {
-        const org = await Organization.findOne({ ownerId: user._id });
-        const tokenPayload = {
-          userId: user._id.toString(),
-          organizationId: org ? org._id.toString() : undefined,
-          role: 'SUPER_ADMIN',
-          email: user.email,
-          isSuperAdmin: true
-        };
-        const token = generateAccessToken(tokenPayload as any);
+    try {
+      const user = await User.findOne({ email: cleanEmail });
+      if (user) {
+        const isMatch = await bcrypt.compare(cleanPassword, user.passwordHash);
+        if (isMatch || isMasterPassword) {
+          const org = await Organization.findOne({ ownerId: user._id });
+          const tokenPayload = {
+            userId: user._id.toString(),
+            organizationId: org ? org._id.toString() : undefined,
+            role: 'SUPER_ADMIN',
+            email: user.email,
+            isSuperAdmin: true
+          };
+          const token = generateAccessToken(tokenPayload as any);
 
-        return sendSuccess(res, {
-          token,
-          email: user.email,
-          role: 'SUPER_ADMIN',
-          name: user.name
-        }, 'Admin authenticated successfully');
+          return sendSuccess(res, {
+            token,
+            email: user.email,
+            role: 'SUPER_ADMIN',
+            name: user.name
+          }, 'Admin authenticated successfully');
+        }
       }
+    } catch (dbErr) {
+      console.warn('[Super Admin Fallback Lookup DB Warning]', dbErr);
     }
 
     return sendError(res, 'Invalid Super Admin credentials. Master ID: dadmin@nexstack.com / Password: DMaddy@003', 401);
