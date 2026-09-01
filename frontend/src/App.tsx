@@ -5,6 +5,7 @@ import { useAuthStore } from './store/useAuthStore';
 
 import { Sidebar } from './components/Sidebar';
 import { Header } from './components/Header';
+import { MobileBottomNav } from './components/MobileBottomNav';
 import { AIAssistantDrawer } from './components/AIAssistantDrawer';
 
 import { LandingPage } from './pages/LandingPage';
@@ -30,10 +31,11 @@ import { SettingsPage } from './pages/SettingsPage';
 
 const queryClient = new QueryClient();
 
-// Protected Workspace Layout Guard
+// Protected Workspace Layout Guard with Flutter-Style Mobile Integration
 const WorkspaceLayout: React.FC = () => {
   const { isAuthenticated, fetchProfile } = useAuthStore();
   const [isAIOpen, setIsAIOpen] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   useEffect(() => {
     fetchProfile();
@@ -45,13 +47,29 @@ const WorkspaceLayout: React.FC = () => {
 
   return (
     <div className="flex min-h-screen bg-slate-950 text-slate-100">
-      <Sidebar onOpenAI={() => setIsAIOpen(true)} />
+      {/* Sidebar / Mobile Drawer */}
+      <Sidebar
+        onOpenAI={() => setIsAIOpen(true)}
+        isOpen={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+      />
+
+      {/* Main App Content Viewport */}
       <div className="flex-1 flex flex-col min-w-0">
-        <Header onOpenAI={() => setIsAIOpen(true)} />
-        <main className="flex-1 p-6 overflow-y-auto">
+        <Header
+          onOpenAI={() => setIsAIOpen(true)}
+          onOpenDrawer={() => setIsDrawerOpen(true)}
+        />
+
+        <main className="flex-1 p-3.5 sm:p-6 overflow-y-auto pb-24 lg:pb-6">
           <Outlet />
         </main>
+
+        {/* Flutter-style Bottom Navigation for Mobile Devices */}
+        <MobileBottomNav onOpenDrawer={() => setIsDrawerOpen(true)} />
       </div>
+
+      {/* AI Assistant Modal / Sheet */}
       <AIAssistantDrawer isOpen={isAIOpen} onClose={() => setIsAIOpen(false)} />
     </div>
   );

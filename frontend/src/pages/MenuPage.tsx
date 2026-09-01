@@ -14,7 +14,8 @@ import {
   Clock,
   ChevronRight,
   Flame,
-  MessageSquare
+  MessageSquare,
+  X
 } from 'lucide-react';
 
 interface OrderItem {
@@ -40,6 +41,7 @@ export const MenuPage: React.FC = () => {
 
   const [activeModifierProduct, setActiveModifierProduct] = useState<Product | null>(null);
   const [tempSelectedModifiers, setTempSelectedModifiers] = useState<ProductModifier[]>([]);
+  const [showMobileTicket, setShowMobileTicket] = useState(false);
 
   const loadCatalogData = async () => {
     try {
@@ -314,8 +316,8 @@ export const MenuPage: React.FC = () => {
         </div>
       </div>
 
-      {/* RIGHT: Waiter Ticket & KDS Dispatch Panel */}
-      <div className="w-full lg:w-96 bg-slate-900/80 border border-slate-800 rounded-3xl p-5 shadow-2xl flex flex-col justify-between">
+      {/* RIGHT: Waiter Ticket & KDS Dispatch Panel (Desktop) */}
+      <div className="hidden lg:flex w-96 bg-slate-900/80 border border-slate-800 rounded-3xl p-5 shadow-2xl flex-col justify-between">
         <div className="space-y-4 flex-1 flex flex-col min-h-0">
           <div className="border-b border-slate-800 pb-3 flex items-center justify-between">
             <div>
@@ -427,6 +429,112 @@ export const MenuPage: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {/* Flutter-style Mobile Floating Ticket Bar */}
+      {orderItems.length > 0 && (
+        <div className="lg:hidden fixed bottom-16 left-3 right-3 z-20 bg-gradient-to-r from-emerald-600 to-teal-600 p-3 rounded-2xl shadow-2xl flex items-center justify-between text-white border border-emerald-400/30 animate-slide-up">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center font-black text-xs">
+              {orderItems.reduce((s, i) => s + i.quantity, 0)}
+            </div>
+            <div>
+              <span className="text-[11px] text-emerald-100 block leading-none">Table {selectedTable}</span>
+              <span className="text-sm font-black font-mono">
+                ₹{orderItems.reduce((acc, item) => acc + item.product.sellingPrice * item.quantity, 0).toFixed(2)}
+              </span>
+            </div>
+          </div>
+          <button
+            onClick={() => setShowMobileTicket(true)}
+            className="px-3.5 py-2 bg-white text-emerald-700 font-bold rounded-xl text-xs shadow-md active:scale-95 transition"
+          >
+            Review & Send →
+          </button>
+        </div>
+      )}
+
+      {/* Flutter-style Mobile Slide-up Bottom Sheet Ticket Modal */}
+      {showMobileTicket && (
+        <div className="lg:hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex flex-col justify-end p-0">
+          <div onClick={() => setShowMobileTicket(false)} className="flex-1 w-full" />
+          <div className="bg-slate-900 border-t border-slate-700 w-full max-h-[85vh] rounded-t-3xl p-5 flex flex-col justify-between shadow-2xl animate-slide-up pb-safe">
+            <div className="w-12 h-1 bg-slate-700 rounded-full mx-auto mb-3" />
+
+            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+              <div>
+                <h3 className="font-bold text-white text-base">Kitchen Ticket (KOT)</h3>
+                <p className="text-[11px] text-slate-400">Review items before sending to kitchen</p>
+              </div>
+              <button
+                onClick={() => setShowMobileTicket(false)}
+                className="p-1.5 rounded-full text-slate-400 hover:text-white bg-slate-800"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Table Selection */}
+            <div className="py-3">
+              <label className="block text-xs font-bold text-slate-300 mb-1 uppercase">Select Table</label>
+              <select
+                value={selectedTable}
+                onChange={(e) => setSelectedTable(e.target.value)}
+                className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-xs font-bold text-emerald-400 focus:outline-none"
+              >
+                <option value="Normal">Normal</option>
+                {tables.map((t) => (
+                  <option key={t._id} value={t.tableNumber}>
+                    {t.tableNumber} ({t.capacity} Seats)
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Item List */}
+            <div className="flex-1 my-2 overflow-y-auto max-h-56 space-y-2 pr-1">
+              {orderItems.map((item, idx) => (
+                <div key={idx} className="p-2.5 bg-slate-800/80 rounded-xl border border-slate-700/60 flex items-center justify-between">
+                  <div className="flex-1 pr-2">
+                    <h5 className="font-bold text-white text-xs">{item.product.name}</h5>
+                    <span className="text-[11px] text-emerald-400 font-mono">
+                      ₹{(item.product.sellingPrice * item.quantity).toFixed(2)}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-1.5">
+                    <button onClick={() => updateQuantity(idx, -1)} className="p-1 text-slate-400 hover:text-white bg-slate-700 rounded-md">
+                      <Minus className="w-3 h-3" />
+                    </button>
+                    <span className="text-xs font-bold text-white w-4 text-center">{item.quantity}</span>
+                    <button onClick={() => updateQuantity(idx, 1)} className="p-1 text-slate-400 hover:text-white bg-slate-700 rounded-md">
+                      <Plus className="w-3 h-3" />
+                    </button>
+                    <button onClick={() => removeItem(idx)} className="p-1 text-rose-400 hover:bg-rose-500/10 rounded-md ml-1">
+                      <Trash2 className="w-3 h-3" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Bottom Action */}
+            <div className="border-t border-slate-800 pt-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowMobileTicket(false);
+                  handleSendToKitchenKDS();
+                }}
+                disabled={sendingKOT || orderItems.length === 0}
+                className="w-full py-3.5 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-extrabold rounded-xl text-sm shadow-xl flex items-center justify-center gap-2 active:scale-95 transition"
+              >
+                {sendingKOT ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                <span>Dispatch Order to Kitchen (KDS)</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Modifiers Modal */}
       {activeModifierProduct && (

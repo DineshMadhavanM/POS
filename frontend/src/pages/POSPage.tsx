@@ -35,6 +35,7 @@ export const POSPage: React.FC = () => {
   const [showCustomerModal, setShowCustomerModal] = useState(false);
   const [showCheckoutModal, setShowCheckoutModal] = useState(false);
   const [showReceiptModal, setShowReceiptModal] = useState(false);
+  const [showMobileCart, setShowMobileCart] = useState(false);
 
   const [paymentMethods, setPaymentMethods] = useState<Array<{ method: 'CASH' | 'UPI' | 'CARD'; amount: number }>>([
     { method: 'UPI', amount: 0 }
@@ -288,8 +289,8 @@ export const POSPage: React.FC = () => {
         </div>
       </div>
 
-      {/* RIGHT: Live POS Cart Panel */}
-      <div className="w-full lg:w-96 bg-slate-900/90 border border-slate-800 rounded-3xl p-5 flex flex-col justify-between shadow-2xl backdrop-blur-xl">
+      {/* RIGHT: Live POS Cart Panel (Desktop) */}
+      <div className="hidden lg:flex w-96 bg-slate-900/90 border border-slate-800 rounded-3xl p-5 flex-col justify-between shadow-2xl backdrop-blur-xl">
         {/* Cart Header & Customer selector */}
         <div className="space-y-3">
           <div className="flex items-center justify-between border-b border-slate-800 pb-3">
@@ -396,6 +397,110 @@ export const POSPage: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {/* Flutter-style Mobile Floating Cart Summary Bar */}
+      {cart.items.length > 0 && (
+        <div className="lg:hidden fixed bottom-16 left-3 right-3 z-20 bg-gradient-to-r from-blue-600 to-indigo-600 p-3 rounded-2xl shadow-2xl flex items-center justify-between text-white border border-blue-400/30 animate-slide-up">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center font-black text-xs">
+              {cart.items.reduce((s, i) => s + i.quantity, 0)}
+            </div>
+            <div>
+              <span className="text-[11px] text-blue-100 block leading-none">Cart Total</span>
+              <span className="text-sm font-black font-mono">{currencySymbol}{cart.getGrandTotal().toFixed(2)}</span>
+            </div>
+          </div>
+          <button
+            onClick={() => setShowMobileCart(true)}
+            className="px-3.5 py-2 bg-white text-blue-600 font-bold rounded-xl text-xs shadow-md active:scale-95 transition"
+          >
+            View Cart ({currencySymbol}{cart.getGrandTotal().toFixed(2)}) →
+          </button>
+        </div>
+      )}
+
+      {/* Flutter-style Mobile Slide-up Bottom Sheet Cart Modal */}
+      {showMobileCart && (
+        <div className="lg:hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex flex-col justify-end p-0">
+          <div
+            onClick={() => setShowMobileCart(false)}
+            className="flex-1 w-full"
+          />
+          <div className="bg-slate-900 border-t border-slate-700 w-full max-h-[85vh] rounded-t-3xl p-5 flex flex-col justify-between shadow-2xl animate-slide-up pb-safe">
+            {/* Sheet Handle */}
+            <div className="w-12 h-1 bg-slate-700 rounded-full mx-auto mb-3" />
+
+            {/* Cart Header */}
+            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+              <h3 className="font-bold text-white text-base flex items-center gap-2">
+                <Receipt className="w-5 h-5 text-blue-400" />
+                <span>Your Order Cart</span>
+              </h3>
+              <button
+                onClick={() => setShowMobileCart(false)}
+                className="p-1.5 rounded-full text-slate-400 hover:text-white bg-slate-800"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Cart Items List */}
+            <div className="flex-1 my-3 overflow-y-auto max-h-60 space-y-2 pr-1">
+              {cart.items.map((item) => (
+                <div key={item.product._id} className="p-3 bg-slate-800/60 rounded-xl border border-slate-700/50 flex items-center justify-between">
+                  <div className="flex-1 pr-2">
+                    <h5 className="font-semibold text-white text-xs">{item.product.name}</h5>
+                    <p className="text-xs text-blue-400 font-mono mt-0.5">
+                      {currencySymbol}{item.unitPrice.toFixed(2)} × {item.quantity} = {currencySymbol}{item.itemTotal.toFixed(2)}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      onClick={() => cart.updateQuantity(item.product._id, -1)}
+                      className="p-1 text-slate-400 hover:text-white bg-slate-700 rounded-md"
+                    >
+                      <Minus className="w-3 h-3" />
+                    </button>
+                    <span className="text-xs font-bold text-white w-5 text-center">{item.quantity}</span>
+                    <button
+                      onClick={() => cart.updateQuantity(item.product._id, 1)}
+                      className="p-1 text-slate-400 hover:text-white bg-slate-700 rounded-md"
+                    >
+                      <Plus className="w-3 h-3" />
+                    </button>
+                    <button
+                      onClick={() => cart.removeItem(item.product._id)}
+                      className="p-1 text-rose-400 hover:bg-rose-500/10 rounded-md ml-1"
+                    >
+                      <Trash2 className="w-3 h-3" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Totals & Checkout */}
+            <div className="border-t border-slate-800 pt-3 space-y-2">
+              <div className="flex justify-between text-base font-extrabold text-white">
+                <span>Grand Total:</span>
+                <span className="text-blue-400">{currencySymbol}{cart.getGrandTotal().toFixed(2)}</span>
+              </div>
+
+              <button
+                onClick={() => {
+                  setShowMobileCart(false);
+                  handleOpenCheckout();
+                }}
+                className="w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-xl text-sm shadow-xl flex items-center justify-center gap-2 active:scale-95 transition"
+              >
+                <CreditCard className="w-4 h-4" />
+                <span>Proceed to Pay</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* MODAL: Customer Selector */}
       {showCustomerModal && (

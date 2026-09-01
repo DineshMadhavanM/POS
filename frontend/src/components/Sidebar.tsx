@@ -17,14 +17,17 @@ import {
   Settings,
   Sparkles,
   LogOut,
-  Layers
+  Layers,
+  X
 } from 'lucide-react';
 
 interface SidebarProps {
   onOpenAI: () => void;
+  isOpen?: boolean;
+  onClose?: () => void;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ onOpenAI }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ onOpenAI, isOpen = false, onClose }) => {
   const { organization, role, logout } = useAuthStore();
   const businessType = organization?.businessType || 'RESTAURANT';
 
@@ -44,22 +47,39 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenAI }) => {
 
   const filteredNav = navItems.filter(item => !role || item.roles.includes(role));
 
-  return (
-    <aside className="w-64 bg-slate-900/90 border-r border-slate-800 flex flex-col justify-between h-screen sticky top-0 backdrop-blur-xl z-20">
+  const handleNavClick = () => {
+    if (onClose) onClose();
+  };
+
+  const sidebarContent = (
+    <div className="flex flex-col justify-between h-full bg-slate-900/95 backdrop-blur-2xl border-r border-slate-800">
       <div>
         {/* Brand Header */}
-        <div className="p-6 border-b border-slate-800/80 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-sky-400 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-blue-500/20">
-            N
+        <div className="p-5 border-b border-slate-800 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-sky-400 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-blue-500/20">
+              N
+            </div>
+            <div>
+              <h1 className="font-bold text-lg text-white tracking-tight leading-none">NexStack POS</h1>
+              <p className="text-xs text-blue-400 font-medium mt-1 uppercase tracking-wider">{businessType}</p>
+            </div>
           </div>
-          <div>
-            <h1 className="font-bold text-lg text-white tracking-tight leading-none">NexStack POS</h1>
-            <p className="text-xs text-blue-400 font-medium mt-1 uppercase tracking-wider">{businessType}</p>
-          </div>
+
+          {/* Close button for mobile drawer */}
+          {onClose && (
+            <button
+              onClick={onClose}
+              className="lg:hidden p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/80 transition"
+              aria-label="Close navigation drawer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          )}
         </div>
 
         {/* Navigation Items */}
-        <nav className="p-4 space-y-1 overflow-y-auto max-h-[calc(100vh-220px)]">
+        <nav className="p-4 space-y-1 overflow-y-auto max-h-[calc(100vh-210px)]">
           <div className="px-3 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">Main Workspace</div>
           {filteredNav.map((item) => {
             const Icon = item.icon;
@@ -67,8 +87,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenAI }) => {
               <NavLink
                 key={item.path}
                 to={item.path}
+                onClick={handleNavClick}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-all duration-200 ${
+                  `flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-sm transition-all duration-200 active:scale-[0.98] ${
                     isActive
                       ? 'bg-blue-600/15 text-blue-400 border border-blue-500/30 shadow-md shadow-blue-500/5'
                       : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
@@ -87,8 +108,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenAI }) => {
           {(businessType === 'RESTAURANT' || businessType === 'CAFE') && (
             <NavLink
               to="/restaurant"
+              onClick={handleNavClick}
               className={({ isActive }) =>
-                `flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-all duration-200 ${
+                `flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-sm transition-all duration-200 active:scale-[0.98] ${
                   isActive
                     ? 'bg-emerald-600/15 text-emerald-400 border border-emerald-500/30'
                     : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
@@ -103,8 +125,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenAI }) => {
           {businessType === 'BAKERY' && (
             <NavLink
               to="/bakery"
+              onClick={handleNavClick}
               className={({ isActive }) =>
-                `flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-all duration-200 ${
+                `flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-sm transition-all duration-200 active:scale-[0.98] ${
                   isActive
                     ? 'bg-pink-600/15 text-pink-400 border border-pink-500/30'
                     : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
@@ -119,8 +142,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenAI }) => {
           {businessType === 'RETAIL' && (
             <NavLink
               to="/retail"
+              onClick={handleNavClick}
               className={({ isActive }) =>
-                `flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium text-sm transition-all duration-200 ${
+                `flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-sm transition-all duration-200 active:scale-[0.98] ${
                   isActive
                     ? 'bg-purple-600/15 text-purple-400 border border-purple-500/30'
                     : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
@@ -135,23 +159,54 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenAI }) => {
       </div>
 
       {/* Footer / AI Assistant & Logout */}
-      <div className="p-4 border-t border-slate-800 space-y-2">
+      <div className="p-4 border-t border-slate-800 space-y-2 pb-safe">
         <button
-          onClick={onOpenAI}
-          className="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white font-medium rounded-xl text-sm shadow-lg shadow-indigo-500/20 transition"
+          onClick={() => {
+            onOpenAI();
+            if (onClose) onClose();
+          }}
+          className="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white font-medium rounded-xl text-sm shadow-lg shadow-indigo-500/20 active:scale-95 transition"
         >
           <Sparkles className="w-4 h-4 text-yellow-300 animate-pulse" />
           <span>AI Assistant</span>
         </button>
 
         <button
-          onClick={logout}
+          onClick={() => {
+            logout();
+            if (onClose) onClose();
+          }}
           className="w-full flex items-center justify-center gap-2 px-3 py-2 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-xl text-sm font-medium transition"
         >
           <LogOut className="w-4 h-4" />
           <span>Sign Out</span>
         </button>
       </div>
-    </aside>
+    </div>
+  );
+
+  return (
+    <>
+      {/* Desktop Persistent Sidebar */}
+      <aside className="hidden lg:flex w-64 h-screen sticky top-0 z-20 flex-col shrink-0">
+        {sidebarContent}
+      </aside>
+
+      {/* Mobile / Tablet Flutter-Style Navigation Drawer */}
+      {isOpen && (
+        <div className="lg:hidden fixed inset-0 z-50 flex">
+          {/* Backdrop Blur Overlay */}
+          <div
+            onClick={onClose}
+            className="fixed inset-0 bg-slate-950/70 backdrop-blur-sm transition-opacity duration-300"
+          />
+
+          {/* Slide-over Drawer Panel */}
+          <div className="relative w-72 max-w-[82vw] h-full shadow-2xl z-10 animate-slide-left">
+            {sidebarContent}
+          </div>
+        </div>
+      )}
+    </>
   );
 };
