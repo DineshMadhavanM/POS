@@ -30,6 +30,7 @@ import { ReportsPage } from './pages/ReportsPage';
 import { SettingsPage } from './pages/SettingsPage';
 import { SuperAdminLoginPage } from './pages/SuperAdminLoginPage';
 import { SuperAdminPanelPage } from './pages/SuperAdminPanelPage';
+import { AboutPage } from './pages/AboutPage';
 
 const queryClient = new QueryClient();
 
@@ -99,6 +100,7 @@ export const App: React.FC = () => {
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<LandingPage />} />
+          <Route path="/about" element={<AboutPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/admin-login" element={<SuperAdminLoginPage />} />
           <Route path="/super-admin" element={<SuperAdminPanelPage />} />

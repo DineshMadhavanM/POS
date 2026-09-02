@@ -14,7 +14,10 @@ import {
   LogIn,
   Layers,
   Receipt,
-  Smartphone
+  Smartphone,
+  Coffee,
+  Package,
+  BarChart3
 } from 'lucide-react';
 
 export const LandingPage: React.FC = () => {
@@ -34,6 +37,13 @@ export const LandingPage: React.FC = () => {
 
         {/* Desktop Navigation Actions */}
         <div className="hidden sm:flex items-center gap-2.5">
+          <Link
+            to="/about"
+            className="px-3.5 py-2 rounded-xl text-xs font-semibold text-blue-400 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 transition flex items-center gap-1.5 active:scale-95"
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>About Us & Founder</span>
+          </Link>
           <Link
             to="/employee-login"
             className="px-3.5 py-2 rounded-xl text-xs font-semibold text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 transition flex items-center gap-1.5 active:scale-95"
@@ -60,6 +70,12 @@ export const LandingPage: React.FC = () => {
         {/* Mobile Navigation Actions */}
         <div className="flex sm:hidden items-center gap-2">
           <Link
+            to="/about"
+            className="px-2.5 py-1.5 rounded-xl text-xs font-semibold text-blue-400 bg-blue-500/10 border border-blue-500/20 transition active:scale-95"
+          >
+            About
+          </Link>
+          <Link
             to="/login"
             className="px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-300 bg-slate-900 border border-slate-800 transition active:scale-95"
           >
@@ -80,10 +96,14 @@ export const LandingPage: React.FC = () => {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 sm:w-96 h-72 sm:h-96 bg-blue-600/20 blur-[100px] sm:blur-[140px] rounded-full pointer-events-none"></div>
 
         {/* Badge */}
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[11px] sm:text-xs font-semibold uppercase tracking-wider mb-6 sm:mb-8 backdrop-blur-md">
+        <Link
+          to="/about"
+          className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/20 text-blue-400 text-[11px] sm:text-xs font-semibold uppercase tracking-wider mb-6 sm:mb-8 backdrop-blur-md transition group"
+        >
           <Sparkles className="w-3.5 h-3.5 text-yellow-400 animate-pulse shrink-0" />
-          <span className="truncate">Next-Gen Multi-Tenant POS Platform</span>
-        </div>
+          <span className="truncate">Next-Gen Multi-Tenant POS Platform • Meet the Founder</span>
+          <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition" />
+        </Link>
 
         {/* Heading */}
         <h1 className="text-3xl sm:text-5xl md:text-6xl font-black text-white tracking-tight leading-tight max-w-4xl">
@@ -108,10 +128,10 @@ export const LandingPage: React.FC = () => {
             <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
           </Link>
           <Link
-            to="/login"
+            to="/about"
             className="w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl sm:rounded-2xl text-sm sm:text-base font-bold text-slate-300 bg-slate-900/90 hover:bg-slate-800 border border-slate-800 transition flex items-center justify-center active:scale-95"
           >
-            Sign In
+            Explore Platform & Founder
           </Link>
         </div>
 
@@ -134,48 +154,68 @@ export const LandingPage: React.FC = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {/* Card 1: Restaurant */}
-            <div className="p-4 sm:p-6 bg-slate-900/90 rounded-2xl border border-slate-800 hover:border-emerald-500/40 transition group shadow-lg">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center mb-3 sm:mb-4 group-hover:scale-110 transition">
-                <Utensils className="w-5 h-5 sm:w-6 sm:h-6" />
+            <Link to="/about#facilities" className="p-4 sm:p-6 bg-slate-900/90 rounded-2xl border border-slate-800 hover:border-emerald-500/40 transition group shadow-lg flex flex-col justify-between">
+              <div>
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center mb-3 sm:mb-4 group-hover:scale-110 transition">
+                  <Utensils className="w-5 h-5 sm:w-6 sm:h-6" />
+                </div>
+                <h3 className="text-base sm:text-lg font-bold text-white group-hover:text-emerald-400 transition">Restaurants & Cafes</h3>
+                <p className="text-slate-400 text-xs sm:text-sm mt-1.5 leading-relaxed">
+                  Floor tables, waiter menu ordering, item modifiers, and real-time Kitchen Display System (KDS).
+                </p>
               </div>
-              <h3 className="text-base sm:text-lg font-bold text-white group-hover:text-emerald-400 transition">Restaurants & Cafes</h3>
-              <p className="text-slate-400 text-xs sm:text-sm mt-1.5 leading-relaxed">
-                Floor tables, waiter menu ordering, item modifiers, and real-time Kitchen Display System (KDS).
-              </p>
-            </div>
+              <span className="text-[11px] font-semibold text-emerald-400 mt-4 inline-flex items-center gap-1 group-hover:underline">
+                View Restaurant Facility <ArrowRight className="w-3 h-3" />
+              </span>
+            </Link>
 
             {/* Card 2: Bakery */}
-            <div className="p-4 sm:p-6 bg-slate-900/90 rounded-2xl border border-slate-800 hover:border-pink-500/40 transition group shadow-lg">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-pink-500/10 border border-pink-500/20 text-pink-400 flex items-center justify-center mb-3 sm:mb-4 group-hover:scale-110 transition">
-                <Cake className="w-5 h-5 sm:w-6 sm:h-6" />
+            <Link to="/about#facilities" className="p-4 sm:p-6 bg-slate-900/90 rounded-2xl border border-slate-800 hover:border-pink-500/40 transition group shadow-lg flex flex-col justify-between">
+              <div>
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-pink-500/10 border border-pink-500/20 text-pink-400 flex items-center justify-center mb-3 sm:mb-4 group-hover:scale-110 transition">
+                  <Cake className="w-5 h-5 sm:w-6 sm:h-6" />
+                </div>
+                <h3 className="text-base sm:text-lg font-bold text-white group-hover:text-pink-400 transition">Bakeries</h3>
+                <p className="text-slate-400 text-xs sm:text-sm mt-1.5 leading-relaxed">
+                  Custom cake scheduling, delivery dates, advance deposit tracking, and chef instructions.
+                </p>
               </div>
-              <h3 className="text-base sm:text-lg font-bold text-white group-hover:text-pink-400 transition">Bakeries</h3>
-              <p className="text-slate-400 text-xs sm:text-sm mt-1.5 leading-relaxed">
-                Custom cake scheduling, delivery dates, advance deposit tracking, and chef instructions.
-              </p>
-            </div>
+              <span className="text-[11px] font-semibold text-pink-400 mt-4 inline-flex items-center gap-1 group-hover:underline">
+                View Bakery Facility <ArrowRight className="w-3 h-3" />
+              </span>
+            </Link>
 
             {/* Card 3: Retail */}
-            <div className="p-4 sm:p-6 bg-slate-900/90 rounded-2xl border border-slate-800 hover:border-purple-500/40 transition group shadow-lg">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center mb-3 sm:mb-4 group-hover:scale-110 transition">
-                <Barcode className="w-5 h-5 sm:w-6 sm:h-6" />
+            <Link to="/about#facilities" className="p-4 sm:p-6 bg-slate-900/90 rounded-2xl border border-slate-800 hover:border-purple-500/40 transition group shadow-lg flex flex-col justify-between">
+              <div>
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center mb-3 sm:mb-4 group-hover:scale-110 transition">
+                  <Barcode className="w-5 h-5 sm:w-6 sm:h-6" />
+                </div>
+                <h3 className="text-base sm:text-lg font-bold text-white group-hover:text-purple-400 transition">Retail Outlets</h3>
+                <p className="text-slate-400 text-xs sm:text-sm mt-1.5 leading-relaxed">
+                  High-speed barcode scanner billing, batch management, low-stock alerts, and supplier receipts.
+                </p>
               </div>
-              <h3 className="text-base sm:text-lg font-bold text-white group-hover:text-purple-400 transition">Retail Outlets</h3>
-              <p className="text-slate-400 text-xs sm:text-sm mt-1.5 leading-relaxed">
-                High-speed barcode scanner billing, batch management, low-stock alerts, and supplier receipts.
-              </p>
-            </div>
+              <span className="text-[11px] font-semibold text-purple-400 mt-4 inline-flex items-center gap-1 group-hover:underline">
+                View Retail Facility <ArrowRight className="w-3 h-3" />
+              </span>
+            </Link>
 
             {/* Card 4: Multi-Tenant */}
-            <div className="p-4 sm:p-6 bg-slate-900/90 rounded-2xl border border-slate-800 hover:border-blue-500/40 transition group shadow-lg">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center mb-3 sm:mb-4 group-hover:scale-110 transition">
-                <Store className="w-5 h-5 sm:w-6 sm:h-6" />
+            <Link to="/about#architecture" className="p-4 sm:p-6 bg-slate-900/90 rounded-2xl border border-slate-800 hover:border-blue-500/40 transition group shadow-lg flex flex-col justify-between">
+              <div>
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center mb-3 sm:mb-4 group-hover:scale-110 transition">
+                  <Store className="w-5 h-5 sm:w-6 sm:h-6" />
+                </div>
+                <h3 className="text-base sm:text-lg font-bold text-white group-hover:text-blue-400 transition">Multi-Tenant Ready</h3>
+                <p className="text-slate-400 text-xs sm:text-sm mt-1.5 leading-relaxed">
+                  Isolated cloud workspaces with enterprise role-based staff access and centralized reporting.
+                </p>
               </div>
-              <h3 className="text-base sm:text-lg font-bold text-white group-hover:text-blue-400 transition">Multi-Tenant Ready</h3>
-              <p className="text-slate-400 text-xs sm:text-sm mt-1.5 leading-relaxed">
-                Isolated cloud workspaces with enterprise role-based staff access and centralized reporting.
-              </p>
-            </div>
+              <span className="text-[11px] font-semibold text-blue-400 mt-4 inline-flex items-center gap-1 group-hover:underline">
+                View Architecture <ArrowRight className="w-3 h-3" />
+              </span>
+            </Link>
           </div>
         </div>
       </section>
@@ -240,6 +280,12 @@ export const LandingPage: React.FC = () => {
                 <ArrowRight className="w-4 h-4" />
               </Link>
               <Link
+                to="/about"
+                className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-3.5 bg-indigo-600/30 hover:bg-indigo-600/50 text-indigo-300 hover:text-white border border-indigo-500/40 font-bold rounded-xl text-xs sm:text-sm shadow-lg transition active:scale-95 flex items-center justify-center gap-2"
+              >
+                <span>Meet Founder & Architect</span>
+              </Link>
+              <Link
                 to="/login"
                 className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-3.5 bg-slate-800/90 hover:bg-slate-700 text-slate-200 font-semibold rounded-xl text-xs sm:text-sm border border-slate-700 transition active:scale-95 flex items-center justify-center"
               >
@@ -257,16 +303,130 @@ export const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-6 sm:py-8 border-t border-slate-800/80 px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3 max-w-7xl mx-auto w-full text-xs text-slate-500">
-        <p>© 2026 NexStack POS SaaS Platform. All rights reserved.</p>
-        <div className="flex items-center gap-4">
-          <Link to="/employee-login" className="hover:text-slate-400 transition">Employee Terminal</Link>
-          <Link to="/login" className="hover:text-slate-400 transition">Owner Login</Link>
-          <Link to="/admin-login" className="text-purple-400 hover:text-purple-300 font-semibold transition flex items-center gap-1">
-            <ShieldCheck className="w-3.5 h-3.5" />
-            <span>Admin Panel</span>
-          </Link>
+      {/* Comprehensive Landing Page Footer Section */}
+      <footer className="border-t border-slate-800 bg-slate-950 py-12 sm:py-16 px-4 sm:px-6 w-full text-slate-400 text-xs">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 sm:gap-10">
+          {/* Col 1: Brand & Founder Dinesh Madhavan */}
+          <div className="lg:col-span-2 space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-sky-400 flex items-center justify-center text-white font-black text-lg shadow-md">
+                N
+              </div>
+              <div>
+                <span className="font-bold text-white text-base tracking-tight leading-none block">NexStack POS</span>
+                <span className="text-[10px] text-blue-400 font-medium">Cloud Multi-Tenant SaaS Engine</span>
+              </div>
+            </div>
+            <p className="text-slate-400 text-xs leading-relaxed max-w-sm">
+              An enterprise-grade multi-tenant Point of Sale system with real-time Kitchen Displays, dynamic table maps, custom cake ordering, barcode retail matrix, and AI insights.
+            </p>
+            <div className="p-3 bg-slate-900/90 border border-slate-800/80 rounded-2xl max-w-sm space-y-1">
+              <div className="flex items-center gap-2 text-white font-bold text-xs">
+                <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                <span>Founder & Chief Architect</span>
+              </div>
+              <p className="text-slate-300 text-xs font-semibold">Dinesh Madhavan</p>
+              <p className="text-[11px] text-slate-400">Architected for frictionless restaurant, cafe, bakery, and retail operations.</p>
+              <Link to="/about#founder" className="text-blue-400 hover:text-blue-300 text-[11px] font-semibold inline-flex items-center gap-1 pt-1">
+                Read Dinesh Madhavan's Vision <ArrowRight className="w-3 h-3" />
+              </Link>
+            </div>
+          </div>
+
+          {/* Col 2: Facilities & Products */}
+          <div className="space-y-3">
+            <h4 className="text-white font-bold text-xs uppercase tracking-wider">Facilities & Products</h4>
+            <ul className="space-y-2 text-xs">
+              <li>
+                <Link to="/about#facilities" className="hover:text-emerald-400 transition flex items-center gap-1.5">
+                  <Utensils className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Restaurants & Dining</span>
+                </Link>
+              </li>
+              <li>
+                <Link to="/about#facilities" className="hover:text-amber-400 transition flex items-center gap-1.5">
+                  <Coffee className="w-3.5 h-3.5 text-amber-400" />
+                  <span>Cafes & QSR Express</span>
+                </Link>
+              </li>
+              <li>
+                <Link to="/about#facilities" className="hover:text-pink-400 transition flex items-center gap-1.5">
+                  <Cake className="w-3.5 h-3.5 text-pink-400" />
+                  <span>Bakeries & Cake Pre-Orders</span>
+                </Link>
+              </li>
+              <li>
+                <Link to="/about#facilities" className="hover:text-purple-400 transition flex items-center gap-1.5">
+                  <Barcode className="w-3.5 h-3.5 text-purple-400" />
+                  <span>Retail & Barcode POS</span>
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Col 3: Main Workspace Sections */}
+          <div className="space-y-3">
+            <h4 className="text-white font-bold text-xs uppercase tracking-wider">Main Workspace</h4>
+            <ul className="space-y-2 text-xs">
+              <li>
+                <Link to="/about#workspace" className="hover:text-blue-400 transition flex items-center gap-1.5">
+                  <Receipt className="w-3.5 h-3.5 text-blue-400" />
+                  <span>POS Billing Terminal</span>
+                </Link>
+              </li>
+              <li>
+                <Link to="/about#workspace" className="hover:text-blue-400 transition flex items-center gap-1.5">
+                  <Layers className="w-3.5 h-3.5 text-indigo-400" />
+                  <span>Table & Floor Manager</span>
+                </Link>
+              </li>
+              <li>
+                <Link to="/about#workspace" className="hover:text-blue-400 transition flex items-center gap-1.5">
+                  <Smartphone className="w-3.5 h-3.5 text-sky-400" />
+                  <span>Kitchen Display (KDS)</span>
+                </Link>
+              </li>
+              <li>
+                <Link to="/about#workspace" className="hover:text-blue-400 transition flex items-center gap-1.5">
+                  <Package className="w-3.5 h-3.5 text-amber-400" />
+                  <span>Inventory & Stock Ledger</span>
+                </Link>
+              </li>
+              <li>
+                <Link to="/about#workspace" className="hover:text-blue-400 transition flex items-center gap-1.5">
+                  <BarChart3 className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Analytics & Z-Reports</span>
+                </Link>
+              </li>
+              <li>
+                <Link to="/about#workspace" className="hover:text-blue-400 transition flex items-center gap-1.5">
+                  <Bot className="w-3.5 h-3.5 text-purple-400" />
+                  <span>AI Business Assistant</span>
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Col 4: Platform & Security */}
+          <div className="space-y-3">
+            <h4 className="text-white font-bold text-xs uppercase tracking-wider">Platform & Access</h4>
+            <ul className="space-y-2 text-xs">
+              <li><Link to="/login" className="hover:text-white transition">Business Owner Sign In</Link></li>
+              <li><Link to="/employee-login" className="text-emerald-400 hover:text-emerald-300 transition">Staff Terminal Access</Link></li>
+              <li><Link to="/register" className="hover:text-white transition">Register Workspace</Link></li>
+              <li><Link to="/admin-login" className="text-purple-400 hover:text-purple-300 transition">Super Admin Panel</Link></li>
+              <li><Link to="/about" className="text-blue-400 hover:text-blue-300 font-semibold transition">About Dinesh Madhavan</Link></li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="max-w-7xl mx-auto mt-10 pt-6 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-400">
+          <p>© 2026 NexStack POS SaaS Platform. Built & Architected by Dinesh Madhavan. All rights reserved.</p>
+          <div className="flex items-center gap-4">
+            <Link to="/about" className="hover:text-slate-300 transition">About Us</Link>
+            <Link to="/login" className="hover:text-slate-300 transition">Sign In</Link>
+            <Link to="/register" className="hover:text-slate-300 transition">Register</Link>
+          </div>
         </div>
       </footer>
     </div>
