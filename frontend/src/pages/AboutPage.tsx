@@ -20,10 +20,6 @@ import {
   Award,
   Code2,
   Database,
-  Laptop,
-  HeartHandshake,
-  DollarSign,
-  Clock,
   LayoutDashboard,
   UtensilsCrossed,
   Package,
@@ -32,23 +28,23 @@ import {
   BarChart3,
   Settings,
   Coffee,
-  ShoppingBag,
   Cpu,
-  Globe,
-  Server,
   Check,
   ArrowUpRight,
-  Mail,
   Github,
-  Linkedin,
   Terminal,
   Printer,
-  FileSpreadsheet
+  ClipboardList,
+  HelpCircle,
+  TrendingUp,
+  SlidersHorizontal,
+  ExternalLink
 } from 'lucide-react';
 
 export const AboutPage: React.FC = () => {
   const [activeFacilityTab, setActiveFacilityTab] = useState<'restaurant' | 'cafe' | 'bakery' | 'retail'>('restaurant');
-  const [activeWorkspaceTab, setActiveWorkspaceTab] = useState<number>(0);
+  const [workspaceFilter, setWorkspaceFilter] = useState<'ALL' | 'MAIN' | 'INDUSTRY'>('ALL');
+  const [selectedModuleId, setSelectedModuleId] = useState<string | null>(null);
 
   const facilities = {
     restaurant: {
@@ -165,92 +161,266 @@ export const AboutPage: React.FC = () => {
     }
   };
 
-  const workspaceModules = [
+  // Comprehensive Main Workspace & Industry Modules Feature Guide
+  const workspaceFeatureDetails = [
     {
-      id: 1,
-      title: 'POS Billing Terminal',
-      icon: ShoppingCartIcon,
-      tag: 'Core Terminal',
-      desc: 'The central command center for transactions. Features instant product search, barcode scanner integration, custom line discounts, multi-tender split payments (Cash, UPI, Card), and automated ESC/POS thermal receipt printing.',
-      highlights: ['Instant Product Filtering', 'Split Tender (Cash + UPI + Card)', 'Line & Cart Level Discounts', 'Direct Thermal Printing']
+      id: 'dashboard',
+      title: 'Dashboard',
+      path: '/dashboard',
+      category: 'MAIN' as const,
+      categoryLabel: 'Main Workspace',
+      icon: LayoutDashboard,
+      themeColor: 'blue',
+      subtitle: 'Real-Time Executive Operations Cockpit',
+      what: 'The central operational overview cockpit that aggregates live daily gross revenue, total completed sales count, real-time dining room table occupancy rates, fast action shortcuts, and an active stream of recent store transactions with live background synchronization.',
+      why: 'Business owners and floor managers need instantaneous situational awareness without manually tallying paper receipts or consolidating spreadsheets. It provides immediate visibility into daily targets, peak traffic rushes, and current store velocity at a glance.',
+      highlights: [
+        'Live Revenue & Sales Volume Counters',
+        'Visual Table Occupancy & Seating Gauge',
+        'Quick Shortcuts to POS, Waiter & KDS',
+        'Recent Transaction Stream with Live Sync'
+      ]
     },
     {
-      id: 2,
-      title: 'Live Table & Floor Manager',
-      icon: UtensilsCrossed,
-      tag: 'Dine-In Operations',
-      desc: 'Visual room floor plan showing table occupancy in real time. Enables waiters and hosts to seat guests, track active dining timers, merge tables for large parties, and instantly link bills to specific table numbers.',
-      highlights: ['Color-Coded Status (Vacant, Busy, Billed)', 'Custom Room & Table Layouts', 'Dine-In Timer Tracking', 'Direct Table Billing']
+      id: 'menu',
+      title: 'Waiter & Menu Order',
+      path: '/menu',
+      category: 'MAIN' as const,
+      categoryLabel: 'Main Workspace',
+      icon: Utensils,
+      themeColor: 'emerald',
+      subtitle: 'Table-Side Digital Ordering & Course Routing',
+      what: 'A touch-optimized digital ordering interface built for waitstaff and floor order-takers. Allows rapid table-side dish selection across menu categories, configuring item modifiers (spiciness levels, extra toppings, special dietary instructions), and assigning tickets to specific table numbers or takeaway tokens.',
+      why: 'Eliminates handwritten paper order slips that often get lost, smeared, or miscommunicated. Cuts table-to-kitchen transmission delays to zero and allows kitchen chefs to begin food preparation the exact second the waiter presses confirm.',
+      highlights: [
+        'Mobile & Tablet-Optimized Order Entry',
+        'Dynamic Modifier & Preparation Notes',
+        'One-Tap Real-Time Kitchen KDS Firing',
+        'Instant Dine-In vs Takeaway Tagging'
+      ]
     },
     {
-      id: 3,
-      title: 'Kitchen Display System (KDS)',
-      icon: Terminal,
-      tag: 'Kitchen Automation',
-      desc: 'Paperless kitchen order tickets (KOT). Incoming orders stream directly to kitchen screens with active cooking timers, station routing (Grill, Bar, Pastry), and one-click status transitions (Pending -> Cooking -> Ready).',
-      highlights: ['Real-Time Ticket Stream', 'Preparation Elapsed Timers', 'Audio Bell Alerts', 'Paperless Green Workflow']
+      id: 'pos',
+      title: 'POS Billing',
+      path: '/pos',
+      category: 'MAIN' as const,
+      categoryLabel: 'Main Workspace',
+      icon: Receipt,
+      themeColor: 'indigo',
+      subtitle: 'High-Velocity Multi-Tender Checkout Register',
+      what: 'The high-speed billing register featuring lightning-fast product search, laser barcode scanner integration, cart discount controls, customer association, multi-tender split payment processing (Cash, UPI QR, Credit/Debit Card), and automated ESC/POS thermal printing.',
+      why: 'Checkout speed is the single most critical factor in customer satisfaction during peak store rush. This register prevents long checkout queues, ensures mathematical tax calculation accuracy, and outputs professional printed receipts in milliseconds.',
+      highlights: [
+        'Multi-Tender Split (Cash + UPI + Card)',
+        'Direct ESC/POS Thermal Printing (80mm/58mm)',
+        'Cart & Line Item Discount Modifiers',
+        'Continuous Laser Barcode Scanner Input'
+      ]
     },
     {
-      id: 4,
-      title: 'Products & Category Hierarchy',
+      id: 'current-orders',
+      title: 'Current Orders',
+      path: '/current-orders',
+      category: 'MAIN' as const,
+      categoryLabel: 'Main Workspace',
+      icon: ClipboardList,
+      themeColor: 'amber',
+      subtitle: 'Live Kitchen & Order Pipeline Board',
+      what: 'A dynamic operational workflow board tracking all active orders in flight across their entire lifecycle: Pending -> In Preparation -> Ready to Serve -> Completed or Cancelled, with elapsed preparation timers.',
+      why: 'Prevents kitchen ticket blind spots and delays by giving floor managers, cashiers, and expeditors complete visibility over order turnaround times, helping catch delays before customers complain.',
+      highlights: [
+        'Full Order Lifecycle Pipeline Tracking',
+        'Elapsed Preparation Time Counters',
+        'One-Click Status Advance & Bump Bar',
+        'Cancellation & Special Notes Audit'
+      ]
+    },
+    {
+      id: 'products',
+      title: 'Products',
+      path: '/products',
+      category: 'MAIN' as const,
+      categoryLabel: 'Main Workspace',
       icon: Package,
-      tag: 'Catalog Management',
-      desc: 'Rich catalog management with multi-level category trees, image uploads, barcode assignments, cost price vs selling price margins, tax configuration, and availability toggles.',
-      highlights: ['Visual Category Grouping', 'Tax & GST Slabs Setup', 'Barcode SKU Mapping', 'Instant Stock Toggles']
+      themeColor: 'purple',
+      subtitle: 'Master Item, Pricing & SKU Directory',
+      what: 'The central inventory catalog manager where managers configure products, selling prices, unit cost prices, gross profit margins, SKU barcodes, inventory stock counts, tax/GST slabs, and active store availability toggles.',
+      why: 'Centralizes pricing and prevents cashiers from selling items at incorrect rates or selling out-of-stock items, while maintaining accurate cost margin tracking across your entire product catalog.',
+      highlights: [
+        'Cost vs Selling Price Profit Margin Matrix',
+        'SKU & Barcode Auto-Generator Support',
+        'Instant Active / Inactive Availability Toggles',
+        'Product Images & Category Association'
+      ]
     },
     {
-      id: 5,
-      title: 'Stock Ledger & Inventory Control',
+      id: 'categories',
+      title: 'Categories',
+      path: '/categories',
+      category: 'MAIN' as const,
+      categoryLabel: 'Main Workspace',
+      icon: Layers,
+      themeColor: 'sky',
+      subtitle: 'Menu & Department Visual Taxonomy',
+      what: 'A visual taxonomy builder to organize your catalog into intuitive collections (e.g. Starters, Main Course, Hot Beverages, Pastries, Fresh Produce) with customizable color tags and display sorting orders.',
+      why: 'Reduces cashier and waiter item lookup time from seconds to a single tap, keeping menus clean, structured, and easy to navigate even for venues with hundreds of menu items or retail SKUs.',
+      highlights: [
+        'Visual Color & Icon Taxonomy Badges',
+        'Custom Display Sort Order Controls',
+        'Category-Level Availability Toggles',
+        'Seamless Sync with POS & Waiter Menu'
+      ]
+    },
+    {
+      id: 'inventory',
+      title: 'Order History',
+      path: '/inventory',
+      category: 'MAIN' as const,
+      categoryLabel: 'Main Workspace',
       icon: Boxes,
-      tag: 'Supply Chain',
-      desc: 'Real-time inventory decrementing with every checkout. Complete audit logs of stock adjustments, low-stock threshold triggers, supplier purchase logs, and wastage write-offs.',
-      highlights: ['Automatic Stock Decrement', 'Low Stock Push Warnings', 'Stock Adjustment History', 'Supplier Purchase Logs']
+      themeColor: 'teal',
+      subtitle: 'Historical Invoices & Stock Deduction Ledger',
+      what: 'A comprehensive sales archive tracking all completed invoices with payment method splits, cashier timestamps, customer names, tax breakdown, and automated real-time stock deduction logs.',
+      why: 'Essential for processing customer returns/refunds, re-printing tax invoices, auditing cashier cash drawers, settling payment disputes, and tracking inventory shrinkage over time.',
+      highlights: [
+        'Full Receipt Re-Printing & PDF Export',
+        'Date Range, Payment Mode & Cashier Filters',
+        'Automatic Real-Time Stock Ledger Updates',
+        'Detailed Line-by-Line Invoice Audit'
+      ]
     },
     {
-      id: 6,
-      title: 'Customer CRM & Loyalty Engine',
+      id: 'customers',
+      title: 'Customers',
+      path: '/customers',
+      category: 'MAIN' as const,
+      categoryLabel: 'Main Workspace',
       icon: Users,
-      tag: 'Customer Growth',
-      desc: 'Centralized customer directory recording lifetime spend, order history, visit frequency, contact details, and reward point balances to drive repeat business and customer loyalty.',
-      highlights: ['Customer Lifetime Value (LTV)', 'Phone Number Fast Search', 'Reward Points System', 'Transaction History']
+      themeColor: 'pink',
+      subtitle: 'Integrated Customer CRM & Loyalty Engine',
+      what: 'A centralized Customer Relationship Management (CRM) directory storing customer profiles with phone numbers, email addresses, total order counts, lifetime spend (LTV), last visit dates, and stored loyalty reward balances.',
+      why: 'Repeat customers drive the vast majority of store revenue. This module turns anonymous walk-in transactions into loyal repeat patrons by enabling phone-number checkout, visit tracking, and reward point redemptions.',
+      highlights: [
+        'Instant Phone Number Checkout Lookup',
+        'Customer Lifetime Value (LTV) Tracking',
+        'Stored Loyalty & Reward Point Balances',
+        'Order History & Visit Frequency Metrics'
+      ]
     },
     {
-      id: 7,
-      title: 'Staff Management & Role-Based Access (RBAC)',
+      id: 'employees',
+      title: 'Employees',
+      path: '/employees',
+      category: 'MAIN' as const,
+      categoryLabel: 'Main Workspace',
       icon: UserCheck,
-      tag: 'Security & Access',
-      desc: 'Granular permissions for Owners, Managers, Cashiers, Waiters, and Kitchen Staff. Features rapid 4-digit PIN authentication for shared counter terminals with comprehensive staff activity audit trails.',
-      highlights: ['Granular Role Permissions', 'Quick 4-Digit Staff PIN Login', 'Shift Performance Logs', 'Fraud Prevention Controls']
+      themeColor: 'rose',
+      subtitle: 'Staff Roles & 4-Digit Security PINs',
+      what: 'Staff roster management with Role-Based Access Control (RBAC) supporting Owner, Manager, Cashier, Waiter, and Kitchen Staff roles, each secured with an individual 4-digit PIN for rapid terminal unlocking.',
+      why: 'Protects sensitive financial reports and settings from non-managerial staff while enabling rapid, frictionless staff switching on shared counter POS terminals without entering slow passwords.',
+      highlights: [
+        'Granular Role-Based Access Control (RBAC)',
+        'Fast 4-Digit PIN Counter Switching',
+        'Individual Shift & Sales Performance Logs',
+        'Staff Account Activation / Suspension'
+      ]
     },
     {
-      id: 8,
-      title: 'Sales Analytics & Financial Insights',
+      id: 'reports',
+      title: 'Reports',
+      path: '/reports',
+      category: 'MAIN' as const,
+      categoryLabel: 'Main Workspace',
       icon: BarChart3,
-      tag: 'Business Intelligence',
-      desc: 'Visual dashboards displaying hourly sales velocity, revenue trends, top-selling items, category performance, payment mode distribution, and End-of-Day (Z-Report) cash drawer reconciliation.',
-      highlights: ['Real-Time Revenue Charts', 'Top-Selling Items Matrix', 'End-of-Day Z-Report', 'Gross Profit Margins']
+      themeColor: 'emerald',
+      subtitle: 'Financial Intelligence & End-of-Day Z-Reports',
+      what: 'A robust financial analytics suite providing gross revenue velocity graphs, top-selling product leaderboards, hourly sales distribution charts, payment method splits (UPI vs Cash vs Card), and End-of-Day (Z-Reports).',
+      why: 'Delivers clear, data-driven clarity on profitability, best-selling dishes/items, peak store hours, and precise cash drawer reconciliation at closing time so you never lose track of store revenue.',
+      highlights: [
+        'End-of-Day (Z-Report) Cash Reconciliation',
+        'Payment Tender Distribution Breakdown',
+        'Top 10 Best-Selling Items Matrix',
+        'Gross Profit Margins & Tax Summary Reports'
+      ]
     },
     {
-      id: 9,
-      title: 'AI Business Assistant Copilot',
-      icon: Bot,
-      tag: 'Intelligent AI',
-      desc: 'An integrated conversational AI assistant ready to answer complex business questions in natural language: "What was my highest grossing item this week?", "Which items need restocking tomorrow?", or "Compare weekend revenue velocity".',
-      highlights: ['Natural Language Querying', 'Predictive Restock Advice', 'Revenue Trend Summaries', 'Context-Aware Assistance']
+      id: 'settings',
+      title: 'Settings',
+      path: '/settings',
+      category: 'MAIN' as const,
+      categoryLabel: 'Main Workspace',
+      icon: Settings,
+      themeColor: 'slate',
+      subtitle: 'Organization Branding & Hardware Config',
+      what: 'The master configuration room where owners configure store legal name, company ID, currency symbols (₹, $, €, £), tax/GST identification numbers, thermal printer baud rates, and cloud database sync.',
+      why: 'Ensures every printed receipt is legally compliant with local commercial tax laws and accurately reflects your store branding, contact information, and connected hardware peripherals.',
+      highlights: [
+        'Store Branding & Tax Identification Setup',
+        'Custom Currency & Decimal Formatting',
+        'Thermal Printer ESC/POS Configuration',
+        'Multi-Tenant Company ID Verification'
+      ]
     },
     {
-      id: 10,
-      title: 'Multi-Tenant Architecture & Super Admin',
-      icon: ShieldCheck,
-      tag: 'Cloud Infrastructure',
-      desc: 'Strict tenant data isolation with individual organization schemas, companyId partition filters, JWT token security, and a dedicated Super Admin control center to manage SaaS subscriptions and system health.',
-      highlights: ['Zero-Leak Data Isolation', 'Super Admin Tenant Oversight', 'Real-Time WebSockets Sync', 'Cloud Backup & Supabase Sync']
+      id: 'restaurant',
+      title: 'Table & KDS (Industry Module)',
+      path: '/restaurant',
+      category: 'INDUSTRY' as const,
+      categoryLabel: 'Industry Module (Restaurant & Cafe)',
+      icon: UtensilsCrossed,
+      themeColor: 'emerald',
+      subtitle: 'Dining Room Floor Map & Live Kitchen Tickets',
+      what: 'An interactive dining floor room layout (Main Hall, Patio, Bar) showing live table statuses (Available, Occupied, Billed, Reserved) combined with a digital Kitchen Display System (KDS) displaying real-time order tickets with cooking timers.',
+      why: 'Solves dining floor chaos by giving hostesses visual seating control and replaces noisy paper kitchen printers with a synchronized digital screen that alerts chefs the second an order is placed.',
+      highlights: [
+        'Custom Room & Floor Table Layout Map',
+        'Real-Time Table Status Indicators',
+        'Color-Coded KDS Cooking Timers',
+        'Paperless Kitchen Station Bump-Bar'
+      ]
+    },
+    {
+      id: 'bakery',
+      title: 'Custom Cake Orders (Industry Module)',
+      path: '/bakery',
+      category: 'INDUSTRY' as const,
+      categoryLabel: 'Industry Module (Bakery)',
+      icon: Cake,
+      themeColor: 'pink',
+      subtitle: 'Bakery Calendar & Advance Deposit Tracker',
+      what: 'A specialized bakery order scheduler with delivery dates, occasion details, multi-tier flavor customization, advance deposit collection, balance tracking, and decorator production sheets.',
+      why: 'Eliminates lost custom cake order slips, guarantees advance token payment before bakers start preparation, and ensures zero delivery mix-ups on custom celebration cakes.',
+      highlights: [
+        'Cake Occasion & Custom Lettering Notes',
+        'Advance Deposit & Balance Tracking',
+        'Delivery Date Calendar Matrix',
+        'Chef Decorator Production Worksheets'
+      ]
+    },
+    {
+      id: 'retail',
+      title: 'Barcode & Batches (Industry Module)',
+      path: '/retail',
+      category: 'INDUSTRY' as const,
+      categoryLabel: 'Industry Module (Retail)',
+      icon: Barcode,
+      themeColor: 'purple',
+      subtitle: 'Laser Retail Scanner & Batch Expiry Matrix',
+      what: 'A retail inventory and checkout accelerator featuring instant laser barcode scanner lookup, product batch numbers, manufacturing/expiry date tracking, and bulk CSV catalog imports.',
+      why: 'Supermarkets and retail stores deal with thousands of SKUs. This module guarantees lightning-fast scan-and-bill checkout while preventing expired items from reaching the customer.',
+      highlights: [
+        'Continuous Barcode Laser Scanning',
+        'Batch & Expiry Date Tracking',
+        'Bulk CSV Product Catalog Import',
+        'Low-Stock Automatic Warnings'
+      ]
     }
   ];
 
-  function ShoppingCartIcon(props: any) {
-    return <Receipt {...props} />;
-  }
+  const filteredFeatures = workspaceFeatureDetails.filter((feat) => {
+    if (workspaceFilter === 'ALL') return true;
+    return feat.category === workspaceFilter;
+  });
 
   const activeFac = facilities[activeFacilityTab];
   const ActiveFacIcon = activeFac.icon;
@@ -273,8 +443,8 @@ export const AboutPage: React.FC = () => {
         <div className="hidden md:flex items-center gap-6 text-xs sm:text-sm font-medium text-slate-300">
           <Link to="/" className="hover:text-blue-400 transition">Home</Link>
           <a href="#founder" className="hover:text-blue-400 transition">Founder & Vision</a>
-          <a href="#facilities" className="hover:text-blue-400 transition">Facilities & Products</a>
-          <a href="#workspace" className="hover:text-blue-400 transition">Workspace Modules</a>
+          <a href="#facilities" className="hover:text-blue-400 transition">Facilities</a>
+          <a href="#workspace-features" className="text-blue-400 font-bold transition">Workspace Features</a>
           <a href="#architecture" className="hover:text-blue-400 transition">Architecture</a>
         </div>
 
@@ -600,59 +770,176 @@ export const AboutPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Main Workspace All Sections Breakdown */}
-      <section id="workspace" className="py-16 sm:py-24 px-4 sm:px-6 bg-slate-900/50 border-y border-slate-800/80 w-full">
+      {/* Dedicated Comprehensive Main Workspace & Industry Modules Feature Guide */}
+      <section id="workspace-features" className="py-16 sm:py-24 px-4 sm:px-6 bg-slate-900/60 border-y border-slate-800/80 w-full scroll-mt-6">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center max-w-3xl mx-auto mb-14">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-semibold uppercase tracking-wider mb-3">
-              <LayoutDashboard className="w-3.5 h-3.5" />
-              <span>Deep Dive</span>
+          {/* Section Header */}
+          <div className="text-center max-w-3xl mx-auto mb-10">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-semibold uppercase tracking-wider mb-3">
+              <SlidersHorizontal className="w-3.5 h-3.5" />
+              <span>Full Project Feature Encyclopedia</span>
             </div>
             <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
-              Main Workspace: All 10 Core Modules Explained
+              Main Workspace & Industry Modules: What & Why
             </h2>
-            <p className="text-slate-400 text-xs sm:text-base mt-2">
-              Every section inside the NexStack Workspace is engineered for performance, precision, and zero clutter
+            <p className="text-slate-400 text-xs sm:text-base mt-2 leading-relaxed">
+              A comprehensive breakdown explaining exactly <strong>what each module is</strong> and <strong>why it is essential</strong> to your business operations.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {workspaceModules.map((module) => {
-              const ModIcon = module.icon;
+          {/* Direct Quick Link Navigation Strip */}
+          <div className="mb-10 p-4 sm:p-6 bg-slate-900/90 border border-slate-800/90 rounded-3xl shadow-xl">
+            <div className="flex items-center justify-between gap-2 mb-3">
+              <span className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+                <ExternalLink className="w-3.5 h-3.5 text-blue-400" />
+                <span>Direct Workspace Module Quick Links:</span>
+              </span>
+              <span className="text-[11px] text-slate-500 hidden sm:inline">Click any badge to jump or navigate</span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {workspaceFeatureDetails.map((feat) => {
+                const Icon = feat.icon;
+                return (
+                  <Link
+                    key={feat.id}
+                    to={feat.path}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-950/80 hover:bg-blue-600/20 border border-slate-800 hover:border-blue-500/40 text-slate-300 hover:text-blue-300 text-xs font-medium transition duration-150 active:scale-95 group"
+                  >
+                    <Icon className="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-400 transition" />
+                    <span>{feat.title}</span>
+                    <ArrowUpRight className="w-3 h-3 text-slate-500 group-hover:text-blue-400 transition" />
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Filter Pills */}
+          <div className="flex items-center justify-center gap-2 mb-8">
+            <button
+              onClick={() => setWorkspaceFilter('ALL')}
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition ${
+                workspaceFilter === 'ALL'
+                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20'
+                  : 'bg-slate-900 text-slate-400 hover:bg-slate-800 border border-slate-800'
+              }`}
+            >
+              All Features ({workspaceFeatureDetails.length})
+            </button>
+            <button
+              onClick={() => setWorkspaceFilter('MAIN')}
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition ${
+                workspaceFilter === 'MAIN'
+                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20'
+                  : 'bg-slate-900 text-slate-400 hover:bg-slate-800 border border-slate-800'
+              }`}
+            >
+              Main Workspace (11)
+            </button>
+            <button
+              onClick={() => setWorkspaceFilter('INDUSTRY')}
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition ${
+                workspaceFilter === 'INDUSTRY'
+                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20'
+                  : 'bg-slate-900 text-slate-400 hover:bg-slate-800 border border-slate-800'
+              }`}
+            >
+              Industry Modules (3)
+            </button>
+          </div>
+
+          {/* Detailed Cards Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {filteredFeatures.map((feat) => {
+              const Icon = feat.icon;
               return (
                 <div
-                  key={module.id}
-                  className="p-6 bg-slate-900/90 border border-slate-800 hover:border-blue-500/40 rounded-3xl transition-all duration-200 hover:shadow-xl hover:shadow-blue-500/5 flex flex-col justify-between group"
+                  key={feat.id}
+                  id={`feature-${feat.id}`}
+                  className="p-6 sm:p-7 bg-slate-900/90 border border-slate-800 hover:border-blue-500/40 rounded-3xl transition-all duration-200 hover:shadow-2xl hover:shadow-blue-500/5 flex flex-col justify-between group"
                 >
-                  <div>
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="w-11 h-11 rounded-2xl bg-blue-600/10 border border-blue-500/20 text-blue-400 flex items-center justify-center group-hover:scale-110 transition">
-                        <ModIcon className="w-5 h-5" />
+                  <div className="space-y-4">
+                    {/* Header with Title, Category Badge, and Link */}
+                    <div className="flex items-start justify-between gap-3 pb-3 border-b border-slate-800/80">
+                      <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 rounded-2xl bg-blue-600/10 border border-blue-500/20 text-blue-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition">
+                          <Icon className="w-6 h-6" />
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <h3 className="text-lg sm:text-xl font-bold text-white group-hover:text-blue-400 transition">
+                              {feat.title}
+                            </h3>
+                          </div>
+                          <p className="text-xs text-slate-400 font-medium">{feat.subtitle}</p>
+                        </div>
                       </div>
-                      <span className="px-2.5 py-1 rounded-full bg-slate-800 text-slate-300 text-[10px] font-bold uppercase tracking-wider border border-slate-700">
-                        {module.tag}
-                      </span>
+
+                      <div className="flex flex-col items-end gap-1.5 shrink-0">
+                        <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                          feat.category === 'MAIN'
+                            ? 'bg-blue-500/10 border border-blue-500/20 text-blue-400'
+                            : 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-400'
+                        }`}>
+                          {feat.categoryLabel}
+                        </span>
+                        <span className="text-[11px] font-mono text-slate-400 bg-slate-950 px-2 py-0.5 rounded-md border border-slate-800">
+                          {feat.path}
+                        </span>
+                      </div>
                     </div>
 
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-xs font-mono font-bold text-blue-400">#{module.id}</span>
-                      <h3 className="text-base sm:text-lg font-bold text-white group-hover:text-blue-400 transition">
-                        {module.title}
-                      </h3>
+                    {/* What It Is Block */}
+                    <div className="p-3.5 bg-slate-950/60 rounded-2xl border border-slate-800/80 space-y-1">
+                      <div className="flex items-center gap-1.5 text-blue-400 font-bold text-xs">
+                        <HelpCircle className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+                        <span>WHAT IT IS:</span>
+                      </div>
+                      <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                        {feat.what}
+                      </p>
                     </div>
 
-                    <p className="text-slate-400 text-xs sm:text-sm mt-2.5 leading-relaxed">
-                      {module.desc}
-                    </p>
+                    {/* Why You Need It Block */}
+                    <div className="p-3.5 bg-indigo-950/20 rounded-2xl border border-indigo-500/20 space-y-1">
+                      <div className="flex items-center gap-1.5 text-indigo-400 font-bold text-xs">
+                        <TrendingUp className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+                        <span>WHY YOU NEED IT:</span>
+                      </div>
+                      <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                        {feat.why}
+                      </p>
+                    </div>
+
+                    {/* Highlights List */}
+                    <div className="space-y-1.5 pt-1">
+                      <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Key Capabilities:</span>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        {feat.highlights.map((h, idx) => (
+                          <div key={idx} className="flex items-center gap-2 text-xs text-slate-300">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                            <span className="truncate">{h}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="mt-5 pt-4 border-t border-slate-800/80 space-y-1.5">
-                    {module.highlights.map((h, i) => (
-                      <div key={i} className="flex items-center gap-2 text-[11px] sm:text-xs text-slate-300">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-blue-400 shrink-0" />
-                        <span className="truncate">{h}</span>
-                      </div>
-                    ))}
+                  {/* Footer Launch Action */}
+                  <div className="mt-6 pt-4 border-t border-slate-800 flex items-center justify-between">
+                    <Link
+                      to={feat.path}
+                      className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-400 hover:text-blue-300 transition group/btn"
+                    >
+                      <span>Open {feat.title} in Workspace</span>
+                      <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition" />
+                    </Link>
+                    <Link
+                      to="/login"
+                      className="px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] font-semibold transition"
+                    >
+                      Sign In to Access
+                    </Link>
                   </div>
                 </div>
               );
@@ -790,12 +1077,18 @@ export const AboutPage: React.FC = () => {
           <div className="space-y-3">
             <h4 className="text-white font-bold text-xs uppercase tracking-wider">Main Workspace</h4>
             <ul className="space-y-2 text-xs">
-              <li><Link to="/about#workspace" className="hover:text-blue-400 transition">POS Billing Terminal</Link></li>
-              <li><Link to="/about#workspace" className="hover:text-blue-400 transition">Live Table & Floor Plan</Link></li>
-              <li><Link to="/about#workspace" className="hover:text-blue-400 transition">Kitchen Display (KDS)</Link></li>
-              <li><Link to="/about#workspace" className="hover:text-blue-400 transition">Inventory & Stock Ledger</Link></li>
-              <li><Link to="/about#workspace" className="hover:text-blue-400 transition">Analytics & Z-Reports</Link></li>
-              <li><Link to="/about#workspace" className="hover:text-blue-400 transition">AI Copilot Assistant</Link></li>
+              <li><Link to="/about#workspace-features" className="hover:text-blue-400 transition">Dashboard Cockpit</Link></li>
+              <li><Link to="/about#workspace-features" className="hover:text-blue-400 transition">Waiter & Menu Order</Link></li>
+              <li><Link to="/about#workspace-features" className="hover:text-blue-400 transition">POS Billing Terminal</Link></li>
+              <li><Link to="/about#workspace-features" className="hover:text-blue-400 transition">Current Orders Pipeline</Link></li>
+              <li><Link to="/about#workspace-features" className="hover:text-blue-400 transition">Products & Catalog</Link></li>
+              <li><Link to="/about#workspace-features" className="hover:text-blue-400 transition">Categories Taxonomy</Link></li>
+              <li><Link to="/about#workspace-features" className="hover:text-blue-400 transition">Order History & Ledger</Link></li>
+              <li><Link to="/about#workspace-features" className="hover:text-blue-400 transition">Customers CRM</Link></li>
+              <li><Link to="/about#workspace-features" className="hover:text-blue-400 transition">Employees & PINs</Link></li>
+              <li><Link to="/about#workspace-features" className="hover:text-blue-400 transition">Reports & Analytics</Link></li>
+              <li><Link to="/about#workspace-features" className="hover:text-blue-400 transition">Settings & Hardware</Link></li>
+              <li><Link to="/about#workspace-features" className="hover:text-emerald-400 transition">Table & KDS Module</Link></li>
             </ul>
           </div>
 
