@@ -319,15 +319,7 @@ export const AboutPage: React.FC = () => {
         </p>
 
         {/* Metric Badges */}
-        <div className="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 max-w-4xl mx-auto">
-          <div className="p-4 bg-slate-900/80 border border-slate-800 rounded-2xl backdrop-blur-sm">
-            <p className="text-2xl sm:text-3xl font-black text-blue-400">100%</p>
-            <p className="text-xs text-slate-400 mt-1 font-medium">Tenant Data Isolation</p>
-          </div>
-          <div className="p-4 bg-slate-900/80 border border-slate-800 rounded-2xl backdrop-blur-sm">
-            <p className="text-2xl sm:text-3xl font-black text-emerald-400">&lt; 50ms</p>
-            <p className="text-xs text-slate-400 mt-1 font-medium">Checkout Latency</p>
-          </div>
+        <div className="mt-10 grid grid-cols-2 gap-3 sm:gap-4 max-w-md mx-auto">
           <div className="p-4 bg-slate-900/80 border border-slate-800 rounded-2xl backdrop-blur-sm">
             <p className="text-2xl sm:text-3xl font-black text-purple-400">4-in-1</p>
             <p className="text-xs text-slate-400 mt-1 font-medium">Industry Engines</p>
